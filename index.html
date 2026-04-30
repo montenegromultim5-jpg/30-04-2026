@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Galería Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Great+Vibes&family=Dancing+Script:wght@400;500;600;700&family=Satisfy&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- FIX: JSZip para descarga en archivo zip real -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#fff;--bg2:#f7f6f3;--bg3:#eeedea;--text:#1a1a1a;--text2:#6b6b6b;--text3:#999;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);--shadow-lg:0 10px 40px rgba(0,0,0,.08);--shadow-xl:0 25px 60px rgba(0,0,0,.15);--radius:12px;--radius-sm:8px;--radius-lg:16px;--sans:'Inter',-apple-system,sans-serif;--serif:'Playfair Display',Georgia,serif;--ease:cubic-bezier(.16,1,.3,1);--accent:#1a1a1a;--drive:#4285f4;--drive-light:#e8f0fe}
+        html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}input,button,textarea,select{font-family:var(--sans)}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}.btn i{width:16px;height:16px}.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#333;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}.btn-secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg3)}.btn-danger{background:#fee2e2;color:#dc2626}.btn-danger:hover{background:#fecaca}.btn-ghost{background:transparent;color:var(--text2);padding:8px}.btn-ghost:hover{background:var(--bg2);color:var(--text)}.btn-sm{padding:7px 14px;font-size:13px}.btn-sm i{width:14px;height:14px}.btn-icon{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%}.btn-xs{width:28px;height:28px;padding:0;justify-content:center;border-radius:6px;font-size:0}.btn-xs i{width:13px;height:13px}
+        .input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg);outline:none;transition:border-color .2s}.input:focus{border-color:var(--accent)}.input-label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}textarea.input{resize:vertical;min-height:80px}select.input{cursor:pointer;appearance:auto}
+        .container{max-width:1200px;margin:0 auto;padding:0 24px}
+        .admin-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+        .admin-logo{display:flex;align-items:center;gap:12px}.admin-logo-mark{width:34px;height:34px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;font-weight:500}.admin-logo-text{font-family:var(--serif);font-size:18px;font-weight:500}
+        .dashboard{padding-top:32px;padding-bottom:60px}.dashboard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px}.dashboard-header h2{font-size:22px;font-weight:600}.dashboard-header h2 span{color:var(--text3);font-weight:400}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+        .gallery-card{background:var(--bg);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:all .25s;cursor:pointer;position:relative}.gallery-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--border2)}.gallery-card-cover{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--bg2)}.gallery-card-cover-placeholder{width:100%;aspect-ratio:4/3;background:var(--bg2);display:flex;align-items:center;justify-content:center;color:var(--text3)}.gallery-card-cover-placeholder i{width:32px;height:32px}.gallery-card-body{padding:16px}.gallery-card-name{font-weight:600;font-size:15px;margin-bottom:4px}.gallery-card-meta{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:12px;flex-wrap:wrap}.gallery-card-meta span{display:flex;align-items:center;gap:4px}.gallery-card-meta i{width:13px;height:13px}.gallery-card-actions{padding:0 16px 16px;display:flex;gap:6px}.gallery-card-badge{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px}
+        .empty-state{text-align:center;padding:80px 20px}.empty-state-icon{width:64px;height:64px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--text3)}.empty-state-icon i{width:28px;height:28px}.empty-state h3{font-size:18px;font-weight:500;margin-bottom:8px}.empty-state p{color:var(--text2);font-size:14px;max-width:400px;margin:0 auto 24px}
+        .detail-header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;gap:16px}.detail-back{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:14px;cursor:pointer;border:none;background:none;transition:color .2s}.detail-back:hover{color:var(--text)}.detail-back i{width:18px;height:18px}.detail-title{font-family:var(--serif);font-size:24px;font-weight:500}.detail-actions{display:flex;gap:8px;flex-wrap:wrap}
+        .section-tabs{display:flex;align-items:center;gap:6px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}.section-tabs::-webkit-scrollbar{display:none}.section-tab{flex-shrink:0;padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:1px solid var(--border);background:var(--bg);transition:all .2s;display:flex;align-items:center;gap:6px}.section-tab:hover{border-color:var(--border2);color:var(--text)}.section-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}.section-tab .count{font-size:11px;opacity:.7}
+        .select-banner{display:none;align-items:center;gap:12px;padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius-sm);margin-bottom:16px;font-size:13px;color:#1e40af}.select-banner.visible{display:flex}.select-banner i{width:18px;height:18px;flex-shrink:0}
+        .admin-photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}.admin-photo-item{position:relative;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:outline .15s}.admin-photo-item.selected{outline:3px solid var(--accent);outline-offset:-3px}.admin-photo-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s}.admin-photo-item:hover img{transform:scale(1.03)}
+        .photo-check{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:6px;border:2px solid rgba(255,255,255,.7);background:rgba(0,0,0,.2);color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .15s;z-index:2}.select-mode .photo-check{display:flex}.photo-check.checked{background:var(--accent);border-color:var(--accent)}.photo-check i{width:13px;height:13px}
+        .photo-controls{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.65));padding:8px;display:flex;align-items:center;justify-content:center;gap:4px;opacity:0;transition:opacity .2s;z-index:2}.admin-photo-item:hover .photo-controls{opacity:1}.select-mode .photo-controls{opacity:1}.photo-controls button{width:26px;height:26px;border-radius:5px;border:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}.photo-controls button:hover{background:rgba(255,255,255,.3)}.photo-controls button i{width:12px;height:12px}.photo-controls button.del:hover{background:rgba(220,38,38,.8)}
+        .selection-bar{position:fixed;bottom:-100px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:12px 20px;border-radius:14px;display:flex;align-items:center;gap:12px;z-index:60;transition:bottom .35s var(--ease);box-shadow:0 12px 40px rgba(0,0,0,.3)}.selection-bar.visible{bottom:28px}.selection-bar .count{font-size:14px;font-weight:500}.selection-bar .btn{padding:8px 14px;font-size:13px}.selection-bar .btn i{width:14px;height:14px}.sel-clear{background:rgba(255,255,255,.15)!important;color:#fff}.sel-move{background:#fff!important;color:var(--accent)}.sel-del{background:rgba(220,38,38,.9)!important;color:#fff}
+        .move-target{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;margin-bottom:8px}.move-target:hover{border-color:var(--accent);background:#eff6ff}.move-target i{width:20px;height:20px;color:var(--text3);flex-shrink:0}.move-target span{flex:1;font-size:14px;font-weight:500}.move-target small{font-size:12px;color:var(--text3);flex-shrink:0}
+        .cover-page{min-height:100vh;min-height:100dvh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}.cover-bg{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.02);transition:transform 8s ease-out}.cover-page:hover .cover-bg{transform:scale(1)}.cover-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35),rgba(0,0,0,.2) 40%,rgba(0,0,0,.4))}.cover-content{position:relative;z-index:2;padding:40px 24px;max-width:800px}.cover-title{font-weight:400;color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;text-shadow:0 2px 40px rgba(0,0,0,.3)}.cover-subtitle{font-weight:300;color:rgba(255,255,255,.85);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}.cover-tagline{font-weight:300;color:rgba(255,255,255,.75);margin-bottom:40px}.cover-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;border-radius:100px;background:rgba(255,255,255,.15);backdrop-filter:blur(12px);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:14px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}.cover-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}.cover-btn i{width:16px;height:16px}.cover-photographer{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2;font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase}.cover-default{background:linear-gradient(135deg,#2c3e50,#1a1a2e 50%,#16213e)}
+        .cover-preview{width:100%;aspect-ratio:9/16;max-height:420px;border-radius:var(--radius-sm);overflow:hidden;position:relative;background:#1a1a2e;margin-bottom:20px}.cover-preview-bg{position:absolute;inset:0;background-size:cover;background-position:center}.cover-preview-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35),rgba(0,0,0,.4))}.cover-preview-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+        .font-option{padding:14px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;text-align:center;margin-bottom:8px;background:var(--bg)}.font-option:hover{border-color:var(--border2);background:var(--bg2)}.font-option.active{border-color:var(--accent);background:var(--bg2)}.font-option .fname{font-size:11px;color:var(--text3);margin-top:4px}.font-option .fprev{font-size:22px;color:var(--text)}
+        .client-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between}.client-logo{display:flex;align-items:center;gap:10px}.client-logo-mark{width:28px;height:28px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px}.client-logo-text{font-family:var(--serif);font-size:15px;font-weight:500}.client-download-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .2s}.client-download-btn:hover{background:#333}.client-download-btn i{width:15px;height:15px}
+        .client-info{text-align:center;padding:40px 20px 24px}.client-info h1{font-weight:500;margin-bottom:8px;letter-spacing:-.02em}.client-info .meta{color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}.client-info .meta span{display:flex;align-items:center;gap:5px}.client-info .meta i{width:14px;height:14px}.meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3)}
+        .masonry{column-count:2;column-gap:6px;max-width:600px;margin:0 auto;padding:0 8px 60px}.masonry-item{break-inside:avoid;margin-bottom:6px;border-radius:4px;overflow:hidden;cursor:pointer;opacity:0;transform:translateY(12px);animation:mIn .4s var(--ease) forwards}.masonry-item img{width:100%;display:block;transition:transform .3s var(--ease)}.masonry-item:hover img{transform:scale(1.015)}@keyframes mIn{to{opacity:1;transform:translateY(0)}}
+        .lightbox{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s}.lightbox.active{opacity:1;visibility:visible}.lb-close{position:fixed;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:301}.lb-close:hover{background:rgba(255,255,255,.2)}.lb-nav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:301}.lb-nav:hover{background:rgba(255,255,255,.2)}.lb-nav.prev{left:12px}.lb-nav.next{right:12px}.lb-img{max-width:95vw;max-height:90vh;object-fit:contain;border-radius:2px;user-select:none}.lb-counter{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;color:rgba(255,255,255,.5);font-weight:500;z-index:301}.lb-actions{position:fixed;bottom:16px;right:16px;display:flex;gap:6px;z-index:301}.lb-action{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}.lb-action:hover{background:rgba(255,255,255,.2)}.lb-action i{width:17px;height:17px}
+        .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all .3s}.modal-overlay.active{opacity:1;visibility:visible}.modal{background:var(--bg);border-radius:var(--radius-lg);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-xl);transform:scale(.95) translateY(10px);transition:transform .3s var(--ease)}.modal-overlay.active .modal{transform:scale(1) translateY(0)}.modal-header{display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0}.modal-header h3{font-size:18px;font-weight:600}.modal-body{padding:20px 24px}.modal-footer{padding:0 24px 24px;display:flex;gap:8px;justify-content:flex-end}.form-group{margin-bottom:16px}
+        .share-link-box{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px}.share-link-box code{flex:1;font-size:13px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;word-break:break-all}
+        .code-display{background:#1a1a1a;color:#fff;padding:20px;border-radius:var(--radius-sm);text-align:center;margin:16px 0}.code-display .code-value{font-family:monospace;font-size:32px;letter-spacing:.3em;font-weight:600;margin:8px 0}.code-display .code-label{font-size:13px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em}
+        .code-input{display:flex;gap:8px;margin-top:12px}.code-input input{flex:1;text-align:center;font-size:20px;letter-spacing:.3em;font-family:monospace;font-weight:600;text-transform:uppercase}
+        .expired-banner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;background:linear-gradient(135deg,#fef2f2,#fff);border:2px solid #fecaca;border-radius:var(--radius-lg);margin:20px 8px;gap:16px}.expired-banner i{width:48px;height:48px;color:#dc2626}.expired-banner h3{font-size:20px;color:#991b1b;font-weight:600}.expired-banner p{color:#7f1d1d;font-size:14px;max-width:320px;line-height:1.6}
+        .drive-hint{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--drive-light);border:1px solid #bfdbfe;border-radius:var(--radius-sm);font-size:13px;color:#1e40af;margin-bottom:16px;line-height:1.5}.drive-hint i{width:18px;height:18px;flex-shrink:0;margin-top:2px}
+        /* FIX: Barra de progreso de descarga */
+        .dl-progress{background:var(--bg2);border-radius:var(--radius-sm);padding:16px;margin-top:12px}.dl-progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0}.dl-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;width:0%}.dl-progress-text{font-size:12px;color:var(--text2);text-align:center}
+        .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:11px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:500;opacity:0;transition:all .4s var(--ease);pointer-events:none;display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.2)}.toast.show{transform:translateX(-50%) translateY(0);opacity:1}.toast i{width:16px;height:16px}
+        .not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}.not-found i{width:48px;height:48px;color:var(--text3);margin-bottom:16px}.not-found h2{font-family:var(--serif);font-size:24px;margin-bottom:8px}
+        .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle}@keyframes spin{to{transform:rotate(360deg)}}
+        .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;color:var(--text2);gap:12px}.loading-state p{font-size:14px}.loading-timer{font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+        @media(min-width:769px){.masonry{column-count:3;max-width:900px;column-gap:8px;padding:0 24px 80px}.masonry-item{margin-bottom:8px;border-radius:5px}.client-info h1{font-size:clamp(26px,4vw,38px)}.client-header{padding:0 24px;height:60px}.client-download-btn span{display:inline}.client-download-btn{padding:8px 16px}.lb-img{max-width:90vw}}
+        @media(max-width:768px){.gallery-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}.admin-photos-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.detail-header{flex-direction:column;align-items:flex-start}.dashboard-header{flex-direction:column;align-items:flex-start}.modal{margin:12px}.detail-actions{width:100%}.detail-actions .btn{flex:1;justify-content:center}.selection-bar{padding:10px 14px;gap:8px;border-radius:12px}.cover-preview{aspect-ratio:9/14;max-height:360px}.share-link-box{flex-direction:column;align-items:stretch}.share-link-box code{font-size:12px}}
+        @media(max-width:400px){.masonry{max-width:100%;column-gap:4px;padding:0 4px 40px}.masonry-item{margin-bottom:4px;border-radius:3px}}
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<div id="lightbox" class="lightbox"></div>
+<div id="modal" class="modal-overlay"></div>
+<div id="toast" class="toast"></div>
+<div id="selBar" class="selection-bar"></div>
+
+<script>
+// ─── CONFIGURACIÓN ───────────────────────────────────────────────────────────
+var DRIVE_URL = 'https://script.google.com/macros/s/AKfycbyOHqGAerDWpOqX9p8fQ3dzGNH8WI23XxWn2GKQBZKb8YfUXpvTcSFzJGHlrp75s1PR8Q/exec';
+var BASE_URL = '';
+var config = { nombre: 'Tu Nombre', contacto: '' };
+
+// ─── CACHÉ ───────────────────────────────────────────────────────────────────
+var galeriasCache = null;
+var detalleCache  = {};
+// FIX: caché de config con TTL para evitar llamadas redundantes al script
+var CONFIG_TTL_MS = 60 * 60 * 1000; // 1 hora
+
+function loadConfigCache() {
+    try {
+        var raw = localStorage.getItem('mgp_config');
+        if (!raw) return null;
+        var obj = JSON.parse(raw);
+        if (Date.now() - obj.ts > CONFIG_TTL_MS) { localStorage.removeItem('mgp_config'); return null; }
+        return obj.data;
+    } catch(e) { return null; }
+}
+function saveConfigCache(data) {
+    try { localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: data })); } catch(e) {}
+}
+
+// ─── ESTADO ──────────────────────────────────────────────────────────────────
+var currentSectionId = 'all';
+var activeGalId      = '';
+var lbPhotos         = [];
+var lbIndex          = 0;
+var selectMode       = false;
+var selectedMap      = new Map();
+var downloadUnlocked = false;
+var isShareView      = false;
+
+// FIX: detectar BASE_URL correctamente (sin IIFE incompleto)
+(function detectBaseUrl() {
+    var o = location.origin;
+    if (o && o !== 'null' && o !== 'undefined' && o.indexOf('http') === 0) {
+        BASE_URL = o + location.pathname;
+    }
+})();
+
+// ─── TIPOGRAFÍAS ─────────────────────────────────────────────────────────────
+var FONTS = [
+    { id: 'playfair',    name: 'Playfair Display',   style: "font-family:'Playfair Display',serif;font-size:22px" },
+    { id: 'cormorant',   name: 'Cormorant Garamond',  style: "font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300" },
+    { id: 'great-vibes', name: 'Great Vibes',          style: "font-family:'Great Vibes',cursive;font-size:26px" },
+    { id: 'dancing',     name: 'Dancing Script',       style: "font-family:'Dancing Script',cursive;font-size:22px;font-weight:500" },
+    { id: 'satisfy',     name: 'Satisfy',              style: "font-family:'Satisfy',cursive;font-size:24px" }
+];
+
+// FIX: _selFont se sincroniza al abrir el editor, no es solo variable global suelta
+var _selFont = 'playfair';
+
+// ─── UTILIDADES ──────────────────────────────────────────────────────────────
+function getBase() {
+    if (BASE_URL) {
+        var b = BASE_URL.replace(/#$/, '');
+        if (b.indexOf('http') === 0) return b;
+    }
+    var o = location.origin;
+    if (!o || o === 'null' || o === 'undefined') return '';
+    return o + location.pathname;
+}
+
+// FIX: drive() con AbortController para timeout de 30s
+async function drive(action, params) {
+    params = params || {};
+    var url = DRIVE_URL + '?action=' + action;
+    for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    var controller = new AbortController();
+    var tid = setTimeout(function() { controller.abort(); }, 30000);
+    try {
+        var r = await fetch(url, { signal: controller.signal });
+        clearTimeout(tid);
+        var d = await r.json();
+        if (d.error) throw new Error(d.error);
+        return d;
+    } catch(e) {
+        clearTimeout(tid);
+        throw e;
+    }
+}
+
+function esc(s)   { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escJS(s) { if (s == null) return ''; return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+function shareLink(id) {
+    var b = getBase();
+    if (!b || b.indexOf('http') !== 0) return '';
+    return b + (b.indexOf('?') === -1 ? '?g=' : '&g=') + id;
+}
+
+function formatDate(d) {
+    if (!d) return '';
+    try { var dt = new Date(d); if (isNaN(dt)) return ''; var m = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']; return m[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear(); } catch(e) { return ''; }
+}
+function formatDateFull(d) {
+    if (!d) return '';
+    try { var dt = new Date(d); if (isNaN(dt)) return ''; var m = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']; return dt.getDate() + ' de ' + m[dt.getMonth()] + ', ' + dt.getFullYear(); } catch(e) { return ''; }
+}
+
+function copyText(t) {
+    if (navigator.clipboard) { navigator.clipboard.writeText(t).then(function() { showToast('Copiado', 'check-circle'); }).catch(function() { fbCopy(t); }); }
+    else { fbCopy(t); }
+}
+function fbCopy(t) {
+    var a = document.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(a); a.select(); document.execCommand('copy'); document.body.removeChild(a);
+    showToast('Copiado', 'check-circle');
+}
+
+function showToast(msg, icon) {
+    icon = icon || 'check-circle';
+    var t = document.getElementById('toast'); if (!t) return;
+    t.innerHTML = '<i data-lucide="' + esc(icon) + '"></i>' + esc(msg);
+    t.classList.add('show');
+    try { lucide.createIcons({ nodes: [t] }); } catch(e) {}
+    clearTimeout(t._t);
+    t._t = setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// FIX: downloadFile usando fetch+blob para evitar bloqueo del navegador
+function downloadFile(src, name) {
+    // Intenta blob primero (evita bloqueo de popups)
+    fetch(src)
+        .then(function(r) { return r.blob(); })
+        .then(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a'); a.href = url; a.download = name || 'foto.jpg';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+        })
+        .catch(function() {
+            // fallback si CORS no permite blob
+            var a = document.createElement('a'); a.href = src; a.download = name || 'foto.jpg'; a.target = '_blank';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        });
+}
+
+function getSectionPhotos(det, sid) {
+    if (!det || !det.secciones) return [];
+    if (sid === 'all') return det.secciones.reduce(function(a, s) { return a.concat(s.fotos || []); }, []);
+    var sec = det.secciones.find(function(s) { return s.id === sid; });
+    return sec ? (sec.fotos || []) : [];
+}
+function getAllPhotos(det) { return getSectionPhotos(det, 'all'); }
+
+function getFontCSS(id, size) {
+    var f = FONTS.find(function(x) { return x.id === id; });
+    return "font-family:'" + (f ? f.name : 'Playfair Display') + "',serif;font-size:" + (size || 22) + "px;";
+}
+
+// FIX: startTimer retorna función de cleanup correcta incluso si el elemento desaparece
+function startTimer(elId) {
+    var start = Date.now();
+    var iv = setInterval(function() {
+        var el = document.getElementById(elId);
+        if (el) el.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+    }, 100);
+    return function() { clearInterval(iv); };
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(html) {
+    var m = document.getElementById('modal'); if (!m) return;
+    m.innerHTML = '<div class="modal">' + html + '</div>';
+    m.classList.add('active');
+    try { lucide.createIcons({ nodes: [m] }); } catch(e) {}
+}
+function closeModal() { var m = document.getElementById('modal'); if (m) m.classList.remove('active'); }
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target.id === 'modal') closeModal(); });
+
+// ─── LIGHTBOX ────────────────────────────────────────────────────────────────
+function openLightbox(photos, idx) {
+    if (!photos || !photos.length) return;
+    lbPhotos = photos; lbIndex = idx;
+    renderLB();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+function renderLB() {
+    var lb = document.getElementById('lightbox');
+    var p = lbPhotos[lbIndex];
+    if (!p) { closeLightbox(); return; }
+    var safeName = (p.nombre || 'foto').replace(/'/g, "\\'");
+    var dlBtn = downloadUnlocked
+        ? '<button class="lb-action" onclick="downloadFile(lbPhotos[lbIndex].url,\'' + safeName + '\');showToast(\'Descargando...\',\'download\')"><i data-lucide="download"></i></button>'
+        : '';
+    lb.innerHTML =
+        '<button class="lb-close" onclick="closeLightbox()"><i data-lucide="x"></i></button>' +
+        '<button class="lb-nav prev" onclick="lbNav(-1)"><i data-lucide="chevron-left"></i></button>' +
+        '<button class="lb-nav next" onclick="lbNav(1)"><i data-lucide="chevron-right"></i></button>' +
+        '<img class="lb-img" src="' + esc(p.url) + '" alt="Foto">' +
+        '<div class="lb-counter">' + (lbIndex + 1) + ' / ' + lbPhotos.length + '</div>' +
+        '<div class="lb-actions">' + dlBtn + '</div>';
+    try { lucide.createIcons({ nodes: [lb] }); } catch(e) {}
+}
+function lbNav(d) {
+    if (!lbPhotos.length) return;
+    lbIndex = (lbIndex + d + lbPhotos.length) % lbPhotos.length;
+    renderLB();
+}
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+});
+var _lbTX = 0;
+document.getElementById('lightbox').addEventListener('touchstart', function(e) { _lbTX = e.changedTouches[0].screenX; }, { passive: true });
+document.getElementById('lightbox').addEventListener('touchend',   function(e) { var d = _lbTX - e.changedTouches[0].screenX; if (Math.abs(d) > 50) lbNav(d > 0 ? 1 : -1); }, { passive: true });
+
+// ─── MULTI-SELECT ─────────────────────────────────────────────────────────────
+function enterSelectMode() {
+    selectMode = true; selectedMap.clear(); updateSelBar();
+    document.querySelectorAll('.admin-photos-grid').forEach(function(g) { g.classList.add('select-mode'); });
+    var b = document.getElementById('selBanner'); if (b) b.classList.add('visible');
+}
+function exitSelectMode() {
+    selectMode = false; selectedMap.clear(); updateSelBar();
+    document.querySelectorAll('.admin-photos-grid').forEach(function(g) { g.classList.remove('select-mode'); });
+    var b = document.getElementById('selBanner'); if (b) b.classList.remove('visible');
+    document.querySelectorAll('.admin-photo-item.selected').forEach(function(el) { el.classList.remove('selected'); });
+    document.querySelectorAll('.photo-check.checked').forEach(function(el) { el.classList.remove('checked'); });
+}
+function toggleSelect(driveId, secId) {
+    if (selectedMap.has(driveId)) selectedMap.delete(driveId);
+    else selectedMap.set(driveId, secId);
+    updateSelBar(); updateCheckVis();
+}
+function updateCheckVis() {
+    document.querySelectorAll('.admin-photo-item').forEach(function(el) {
+        var did = el.dataset.did;
+        var c = el.querySelector('.photo-check'); if (!did || !c) return;
+        if (selectedMap.has(did)) { el.classList.add('selected'); c.classList.add('checked'); }
+        else { el.classList.remove('selected'); c.classList.remove('checked'); }
+    });
+}
+function updateSelBar() {
+    var bar = document.getElementById('selBar'); if (!bar) return;
+    var n = selectedMap.size;
+    if (n > 0 && selectMode) {
+        bar.innerHTML =
+            '<span class="count">' + n + ' seleccionada' + (n !== 1 ? 's' : '') + '</span>' +
+            '<button class="btn sel-clear" onclick="exitSelectMode()"><i data-lucide="x"></i></button>' +
+            '<button class="btn sel-move" onclick="showBulkMove()"><i data-lucide="folder-input"></i> Mover</button>' +
+            '<button class="btn sel-del"  onclick="bulkDel()"><i data-lucide="trash-2"></i> Eliminar</button>';
+        bar.classList.add('visible');
+        try { lucide.createIcons({ nodes: [bar] }); } catch(e) {}
+    } else {
+        bar.classList.remove('visible');
+    }
+}
+function showBulkMove() {
+    var gal = detalleCache[activeGalId]; if (!gal) return;
+    var opts = (gal.secciones || []).map(function(s) {
+        return '<div class="move-target" onclick="doBulkMove(\'' + escJS(s.id) + '\')"><i data-lucide="folder"></i><span>' + esc(s.nombre) + '</span><small>' + (s.fotos || []).length + '</small></div>';
+    }).join('');
+    openModal('<div class="modal-header"><h3>Mover ' + selectedMap.size + ' fotos</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">' + opts + '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+async function doBulkMove(destId) {
+    var ids = Array.from(selectedMap.keys());
+    showToast('Moviendo ' + ids.length + '...', 'loader');
+    for (var i = 0; i < ids.length; i++) {
+        try { await drive('mover_foto', { fotoId: ids[i], destinoId: destId }); } catch(e) {}
+    }
+    closeModal(); selectedMap.clear(); delete detalleCache[activeGalId];
+    showToast(ids.length + ' movidas', 'check-circle');
+    renderGalleryDetail(activeGalId);
+}
+async function bulkDel() {
+    if (!confirm('¿Eliminar ' + selectedMap.size + ' fotos?')) return;
+    var ids = Array.from(selectedMap.keys());
+    for (var i = 0; i < ids.length; i++) {
+        try { await drive('eliminar_foto', { id: ids[i] }); } catch(e) {}
+    }
+    selectedMap.clear(); delete detalleCache[activeGalId];
+    showToast(ids.length + ' eliminadas', 'trash-2');
+    renderGalleryDetail(activeGalId);
+}
+
+// ─── ROUTER ──────────────────────────────────────────────────────────────────
+function getRoute() {
+    var h = location.hash.slice(1) || '/';
+    if (h === '/' || h === '') return { page: 'admin' };
+    if (h.indexOf('/gallery/') === 0) return { page: 'gallery', id: h.slice(9) };
+    return { page: 'admin' };
+}
+function navigate(h) { location.hash = h; }
+window.addEventListener('hashchange', function() {
+    if (isShareView) return;
+    try { render(); } catch(e) { console.error(e); }
+});
+async function render() {
+    try {
+        var r = getRoute();
+        if (r.page === 'admin')   await renderDashboard();
+        else if (r.page === 'gallery') await renderGalleryDetail(r.id);
+    } catch(e) {
+        console.error('Render:', e);
+        document.getElementById('app').innerHTML = '<div class="not-found"><i data-lucide="alert-triangle"></i><h2>Error</h2><button class="btn btn-primary" onclick="render()">Reintentar</button></div>';
+        try { lucide.createIcons(); } catch(e2) {}
+    }
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+async function renderDashboard() {
+    document.getElementById('app').innerHTML =
+        '<div style="min-height:100vh"><header class="admin-header"><div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">' + esc(config.nombre) + '</div></div><div style="display:flex;align-items:center;gap:4px"><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container dashboard"><div class="loading-state"><div class="spinner"></div><p>Cargando galerías</p><span class="loading-timer" id="dT">0.0s</span></div></div></div>';
+    try { lucide.createIcons(); } catch(e) {}
+
+    var stop = startTimer('dT');
+
+    // FIX: usar caché de config con TTL
+    var cached = loadConfigCache();
+    if (cached) { config = cached; }
+    else {
+        try { config = await drive('config'); saveConfigCache(config); } catch(e) {}
+    }
+
+    try { galeriasCache = await drive('galerias'); } catch(e) {
+        stop();
+        document.getElementById('app').innerHTML =
+            '<div style="min-height:100vh"><header class="admin-header"><div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">' + esc(config.nombre) + '</div></div></header><div class="container dashboard"><div class="empty-state"><div class="empty-state-icon"><i data-lucide="cloud-off"></i></div><h3>No se pudo conectar</h3><p>Verifica el script desplegado con acceso "Cualquier persona".</p><button class="btn btn-primary" onclick="render()"><i data-lucide="refresh-cw"></i> Reintentar</button></div></div></div>';
+        try { lucide.createIcons(); } catch(e2) {}
+        return;
+    }
+    stop();
+
+    var g = galeriasCache;
+    var cards = '';
+    if (!g.length) {
+        cards = '<div class="empty-state"><div class="empty-state-icon"><i data-lucide="folder-plus"></i></div><h3>Sin galerías</h3><p>Crea una aquí o agrega carpetas en <strong>"Galerías Pro"</strong> en Drive.</p><button class="btn btn-primary" onclick="showCreateGal()"><i data-lucide="plus"></i> Crear</button></div>';
+    } else {
+        cards = '<div class="gallery-grid">' + g.map(function(gal) {
+            var meta = gal.meta || {};
+            var ci = meta.coverId ? 'https://lh3.googleusercontent.com/d/' + meta.coverId + '=s640' : '';
+            var cv = ci
+                ? '<img class="gallery-card-cover" src="' + esc(ci) + '" alt="" loading="lazy">'
+                : '<div class="gallery-card-cover-placeholder"><i data-lucide="folder"></i></div>';
+            var badges = '';
+            if (gal.expirada) badges += '<div class="gallery-card-badge" style="background:rgba(220,38,38,.9);color:#fff"><i data-lucide="clock" style="width:11px;height:11px"></i> Expirada</div>';
+            if (meta.showCover) badges += '<div class="gallery-card-badge" style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);color:#fff">Portada</div>';
+            return '<div class="gallery-card" onclick="navigate(\'/gallery/' + escJS(gal.id) + '\')">' + cv + badges +
+                '<div class="gallery-card-body"><div class="gallery-card-name">' + esc(gal.nombre) + '</div><div class="gallery-card-meta"><span><i data-lucide="image"></i> ' + gal.fotos + '</span><span><i data-lucide="hard-drive"></i> Drive</span></div></div>' +
+                '<div class="gallery-card-actions" onclick="event.stopPropagation()">' +
+                '<button class="btn btn-primary btn-sm" onclick="showShare(\'' + escJS(gal.id) + '\')"><i data-lucide="share-2"></i> Compartir</button>' +
+                '<button class="btn btn-danger btn-sm btn-icon" onclick="confirmDelGal(\'' + escJS(gal.id) + '\',\'' + escJS(gal.nombre) + '\')"><i data-lucide="trash-2"></i></button>' +
+                '</div></div>';
+        }).join('') + '</div>';
+    }
+
+    document.getElementById('app').innerHTML =
+        '<div style="min-height:100vh"><header class="admin-header"><div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">' + esc(config.nombre) + '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:4px"><button class="btn btn-ghost btn-icon" onclick="render()"><i data-lucide="refresh-cw"></i></button><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header>' +
+        '<div class="container dashboard"><div class="dashboard-header"><h2>Mis Galerías <span>(' + g.length + ')</span></h2><button class="btn btn-primary" onclick="showCreateGal()"><i data-lucide="plus"></i> Nueva</button></div>' + cards + '</div></div>';
+    try { lucide.createIcons(); } catch(e) {}
+}
+
+function showCreateGal() {
+    openModal('<div class="modal-header"><h3>Nueva Galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="cgName" placeholder="Boda María & Juan"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doCreateGal()">Crear</button></div>');
+    setTimeout(function() { var i = document.getElementById('cgName'); if (i) i.focus(); }, 150);
+}
+async function doCreateGal() {
+    var n = (document.getElementById('cgName').value || '').trim();
+    if (!n) { showToast('Ingresa nombre', 'alert-circle'); return; }
+    try { showToast('Creando...', 'loader'); await drive('crear_galeria', { nombre: n }); closeModal(); showToast('"' + n + '" creada', 'check-circle'); galeriasCache = null; render(); }
+    catch(e) { showToast('Error', 'alert-circle'); }
+}
+function confirmDelGal(id, nombre) {
+    openModal('<div class="modal-body" style="padding-top:32px"><div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:#dc2626"><i data-lucide="trash-2" style="width:22px;height:22px"></i></div><h3 style="font-size:18px;font-weight:600;margin-bottom:6px">¿Eliminar "' + esc(nombre) + '"?</h3></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doDelGal(\'' + escJS(id) + '\')">Eliminar</button></div>');
+}
+async function doDelGal(id) {
+    try { await drive('eliminar_galeria', { id: id }); closeModal(); showToast('Eliminada', 'trash-2'); galeriasCache = null; render(); }
+    catch(e) { showToast('Error', 'alert-circle'); }
+}
+
+// ─── COMPARTIR ───────────────────────────────────────────────────────────────
+async function showShare(galId) {
+    var d = detalleCache[galId];
+    if (!d) {
+        try { showToast('Cargando galería...', 'loader'); d = await drive('detalle', { id: galId }); detalleCache[galId] = d; }
+        catch(e) { showToast('Error: ' + e.message, 'alert-circle'); return; }
+    }
+    if (!d.meta) d.meta = {};
+    var meta = d.meta;
+    var link = shareLink(galId);
+    var hasUrl = link && link.indexOf('http') === 0;
+
+    if (!meta.downloadCode) {
+        try { var r = await drive('generar_codigo', { id: galId }); meta.downloadCode = r.codigo; detalleCache[galId].meta.downloadCode = r.codigo; }
+        catch(e) { showToast('Error: ' + e.message, 'alert-circle'); return; }
+    }
+
+    var safeLink = link.replace(/'/g, "\\'");
+    var safeCode = meta.downloadCode.replace(/'/g, "\\'");
+    var linkSection = hasUrl
+        ? '<div style="margin-bottom:20px"><label class="input-label">Enlace de la galería</label><div class="share-link-box"><code>' + esc(link) + '</code><button class="btn btn-secondary btn-sm" onclick="copyText(\'' + safeLink + '\')" style="flex-shrink:0"><i data-lucide="copy"></i> Copiar</button></div><p style="font-size:12px;color:var(--text3);margin-top:-12px;margin-bottom:16px">Envía este enlace a tu cliente.</p></div>'
+        : '';
+
+    openModal(
+        '<div class="modal-header"><h3>Compartir Galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>' +
+        '<div class="modal-body">' + linkSection +
+        '<div style="margin-bottom:20px"><label class="input-label">Código de descarga</label>' +
+        '<div class="code-display"><div class="code-label">Tu cliente necesita este código para descargar</div><div class="code-value">' + esc(meta.downloadCode) + '</div>' +
+        '<button class="btn btn-secondary btn-sm" onclick="copyText(\'' + safeCode + '\');showToast(\'Código copiado\',\'check-circle\')"><i data-lucide="copy"></i> Copiar código</button></div></div>' +
+        '<div style="background:var(--bg2);border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6"><strong style="color:var(--text)">¿Cómo funciona?</strong><br>1. Copia el enlace y envíalo a tu cliente<br>2. El cliente abre el enlace y ve la galería<br>3. Al presionar "Descargar" se le pide el código<br>4. Con el código correcto puede descargar las fotos</div>' +
+        '</div><div class="modal-footer"><button class="btn btn-primary" onclick="closeModal()">Listo</button></div>'
+    );
+    try { lucide.createIcons({ nodes: [document.getElementById('modal')] }); } catch(e) {}
+}
+
+// ─── DETALLE DE GALERÍA ──────────────────────────────────────────────────────
+async function renderGalleryDetail(id) {
+    activeGalId = id; currentSectionId = 'all';
+    selectMode = false; selectedMap.clear(); updateSelBar();
+
+    document.getElementById('app').innerHTML =
+        '<div style="min-height:100vh"><header class="admin-header"><button class="detail-back" onclick="navigate(\'/\')"><i data-lucide="arrow-left"></i> Galerías</button><div style="display:flex;align-items:center;gap:4px"><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container"><div class="loading-state"><div class="spinner"></div><p>Cargando galería</p><span class="loading-timer" id="gT">0.0s</span></div></div></div>';
+    try { lucide.createIcons(); } catch(e) {}
+
+    var stop = startTimer('gT');
+    try {
+        var d = await drive('detalle', { id: id });
+        detalleCache[id] = d;
+        stop();
+        renderGalleryInner(id, d);
+    } catch(e) {
+        stop();
+        document.getElementById('app').innerHTML =
+            '<div style="min-height:100vh"><header class="admin-header"><button class="detail-back" onclick="navigate(\'/\')"><i data-lucide="arrow-left"></i> Galerías</button></header><div class="container"><div class="empty-state"><h3>Error al cargar</h3><button class="btn btn-primary" onclick="renderGalleryDetail(\'' + escJS(id) + '\')"><i data-lucide="refresh-cw"></i> Reintentar</button></div></div></div>';
+        try { lucide.createIcons(); } catch(e2) {}
+    }
+}
+
+function renderGalleryInner(id, d) {
+    var allP = getAllPhotos(d);
+    var photos = getSectionPhotos(d, currentSectionId);
+    var isAll = currentSectionId === 'all';
+
+    var secTabs = '<button class="section-tab ' + (isAll ? 'active' : '') + '" onclick="switchSec(\'' + escJS(id) + '\',\'all\')">Todas <span class="count">' + allP.length + '</span></button>';
+    secTabs += (d.secciones || []).map(function(s) {
+        return '<button class="section-tab ' + (currentSectionId === s.id ? 'active' : '') + '" onclick="switchSec(\'' + escJS(id) + '\',\'' + escJS(s.id) + '\')">' + esc(s.nombre) + ' <span class="count">' + (s.fotos || []).length + '</span></button>';
+    }).join('');
+
+    var photosHtml = '';
+    if (!photos.length) {
+        photosHtml = '<div class="empty-state" style="padding:40px 20px"><div class="empty-state-icon"><i data-lucide="image-plus"></i></div><h3>Sin fotos</h3><p>Sube fotos a <strong>"' + esc(d.nombre) + '"</strong> en Drive y recarga.</p><button class="btn btn-secondary" onclick="renderGalleryDetail(\'' + escJS(id) + '\')"><i data-lucide="refresh-cw"></i> Recargar</button></div>';
+    } else {
+        photosHtml = '<div class="admin-photos-grid ' + (selectMode ? 'select-mode' : '') + '">' +
+            photos.map(function(p, i) {
+                var secId = isAll ? findSecId(d, i) : currentSectionId;
+                var sel = selectedMap.has(p.id);
+                var safePid = escJS(p.id);
+                var safeSecId = escJS(secId || '');
+                var clickAction = selectMode
+                    ? 'toggleSelect(\'' + safePid + '\',\'' + safeSecId + '\')'
+                    : 'openLightbox(getSectionPhotos(detalleCache[\'' + escJS(id) + '\'],\'' + escJS(currentSectionId) + '\']),'+i+')';
+                var checkAction = 'event.stopPropagation();if(!selectMode)return;toggleSelect(\'' + safePid + '\',\'' + safeSecId + '\')';
+                return '<div class="admin-photo-item ' + (sel ? 'selected' : '') + '" data-did="' + esc(p.id) + '" onclick="' + clickAction + '">' +
+                    '<img src="' + esc(p.thumb || p.url) + '" alt="' + esc(p.nombre) + '" loading="lazy">' +
+                    '<div class="photo-check ' + (sel ? 'checked' : '') + '" onclick="' + checkAction + '"><i data-lucide="check"></i></div>' +
+                    '<div class="photo-controls" onclick="event.stopPropagation()">' +
+                    '<button onclick="showMoveFoto(\'' + escJS(id) + '\',\'' + safePid + '\')"><i data-lucide="folder-input"></i></button>' +
+                    '<button class="del" onclick="doDelFoto(\'' + escJS(id) + '\',\'' + safePid + '\')"><i data-lucide="trash-2"></i></button>' +
+                    '</div></div>';
+            }).join('') + '</div>';
+    }
+
+    var showCovBadge = (d.meta && d.meta.showCover)
+        ? '<div class="move-target" style="margin-bottom:16px;background:var(--bg2);cursor:default;border-style:dashed"><i data-lucide="image" style="color:var(--drive)"></i><span>Portada activada</span></div>'
+        : '';
+
+    var diasStr = '';
+    if (d.diasRestantes != null) {
+        diasStr = ' · <span style="color:' + (d.diasRestantes <= 30 ? '#dc2626' : 'var(--text2)') + '">' + d.diasRestantes + ' días restantes</span>';
+    }
+
+    document.getElementById('app').innerHTML =
+        '<div style="min-height:100vh"><header class="admin-header">' +
+        '<button class="detail-back" onclick="navigate(\'/\')"><i data-lucide="arrow-left"></i> Galerías</button>' +
+        '<div style="display:flex;align-items:center;gap:4px">' +
+        '<button class="btn btn-ghost btn-icon" onclick="renderGalleryDetail(\'' + escJS(id) + '\')"><i data-lucide="refresh-cw"></i></button>' +
+        '<button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button>' +
+        '</div></header><div class="container">' +
+        '<div class="detail-header"><div>' +
+        '<div class="detail-title">' + esc(d.nombre) + '</div>' +
+        '<div style="font-size:14px;color:var(--text2);margin-top:4px">' + allP.length + ' foto' + (allP.length !== 1 ? 's' : '') + ' · ' + (d.secciones || []).length + ' sección' + ((d.secciones || []).length !== 1 ? 'es' : '') + diasStr + '</div>' +
+        '</div><div class="detail-actions">' +
+        '<button class="btn btn-primary btn-sm" onclick="showShare(\'' + escJS(id) + '\')"><i data-lucide="share-2"></i> Compartir</button>' +
+        '<button class="btn btn-secondary btn-sm" onclick="showCoverEditor(\'' + escJS(id) + '\')"><i data-lucide="image"></i> Portada</button>' +
+        '<button class="btn btn-secondary btn-sm" onclick="showAddSec(\'' + escJS(id) + '\')"><i data-lucide="folder-plus"></i> Sección</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="confirmDelGal(\'' + escJS(id) + '\',\'' + escJS(d.nombre) + '\')"><i data-lucide="trash-2"></i></button>' +
+        '</div></div>' + showCovBadge +
+        '<div id="selBanner" class="select-banner ' + (selectMode ? 'visible' : '') + '"><i data-lucide="mouse-pointer-click"></i><span><strong>Modo selección:</strong> Clic en fotos para seleccionarlas.</span><button class="btn btn-ghost btn-sm" onclick="exitSelectMode()">Salir</button></div>' +
+        '<div class="drive-hint"><i data-lucide="info"></i><span>Sube fotos a <strong>"' + esc(d.nombre) + '"</strong> en Drive y recarga.</span></div>' +
+        '<div class="section-tabs">' + secTabs + '</div>' + photosHtml +
+        '</div></div>';
+    try { lucide.createIcons(); } catch(e) {}
+    if (selectMode) updateSelBar();
+}
+
+function findSecId(det, idx) {
+    var c = 0;
+    for (var si = 0; si < det.secciones.length; si++) {
+        for (var i = 0; i < (det.secciones[si].fotos || []).length; i++) {
+            if (c === idx) return det.secciones[si].id;
+            c++;
+        }
+    }
+    return null;
+}
+function switchSec(gid, sid) { currentSectionId = sid; var d = detalleCache[gid]; if (d) renderGalleryInner(gid, d); }
+
+async function doDelFoto(galId, fotoId) {
+    if (!confirm('¿Eliminar esta foto?')) return;
+    try { await drive('eliminar_foto', { id: fotoId }); delete detalleCache[galId]; showToast('Eliminada', 'trash-2'); renderGalleryDetail(galId); }
+    catch(e) { showToast('Error', 'alert-circle'); }
+}
+function showMoveFoto(galId, fotoId) {
+    var d = detalleCache[galId]; if (!d) return;
+    var opts = (d.secciones || []).filter(function(s) { return s.id !== galId; }).map(function(s) {
+        return '<div class="move-target" onclick="doMoveFoto(\'' + escJS(galId) + '\',\'' + escJS(fotoId) + '\',\'' + escJS(s.id) + '\')"><i data-lucide="folder"></i><span>' + esc(s.nombre) + '</span><small>' + (s.fotos || []).length + '</small></div>';
+    }).join('');
+    if (!opts) { showToast('No hay otras secciones', 'alert-circle'); return; }
+    openModal('<div class="modal-header"><h3>Mover Foto</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">' + opts + '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+async function doMoveFoto(galId, fotoId, destId) {
+    try { await drive('mover_foto', { fotoId: fotoId, destinoId: destId }); closeModal(); delete detalleCache[galId]; showToast('Movida', 'folder-input'); renderGalleryDetail(galId); }
+    catch(e) { showToast('Error', 'alert-circle'); }
+}
+function showAddSec(galId) {
+    openModal('<div class="modal-header"><h3>Nueva Sección</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="newSec" placeholder="Misa, Fiesta..."></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doAddSec(\'' + escJS(galId) + '\')">Crear</button></div>');
+    setTimeout(function() { var i = document.getElementById('newSec'); if (i) i.focus(); }, 150);
+}
+async function doAddSec(galId) {
+    var n = (document.getElementById('newSec').value || '').trim();
+    if (!n) { showToast('Ingresa nombre', 'alert-circle'); return; }
+    try { await drive('crear_seccion', { id: galId, nombre: n }); closeModal(); showToast('"' + n + '" creada', 'check-circle'); delete detalleCache[galId]; renderGalleryDetail(galId); }
+    catch(e) { showToast('Error', 'alert-circle'); }
+}
+
+// ─── EDITOR DE PORTADA ───────────────────────────────────────────────────────
+function showCoverEditor(galId) {
+    var d = detalleCache[galId]; if (!d) return;
+    if (!d.meta) d.meta = {};
+    var meta = d.meta;
+    var pBg = d.coverUrl ? 'background-image:url(\'' + esc(d.coverUrl) + '\')' : '';
+    // FIX: sincronizar _selFont con el valor guardado
+    _selFont = meta.font || 'playfair';
+
+    var fontOpts = FONTS.map(function(f) {
+        return '<div class="font-option ' + (_selFont === f.id ? 'active' : '') + '" onclick="selectFont(\'' + f.id + '\')" data-fid="' + f.id + '"><div class="fprev" style="' + f.style + '">María & Juan</div><div class="fname">' + f.name + '</div></div>';
+    }).join('');
+
+    openModal(
+        '<div class="modal-header"><h3>Portada</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>' +
+        '<div class="modal-body">' +
+        '<div class="cover-preview"><div class="cover-preview-bg ' + (pBg ? '' : 'cover-default') + '" id="cpBg" style="' + pBg + '"></div><div class="cover-preview-overlay"></div>' +
+        '<div class="cover-preview-content">' +
+        '<div class="cover-preview-title" id="cpT" style="color:#fff;' + getFontCSS(_selFont, 28) + '">' + esc(meta.titulo || d.nombre || 'Título') + '</div>' +
+        '<div id="cpD" style="color:rgba(255,255,255,.8);font-size:13px;margin-top:6px">' + esc(formatDateFull(meta.fecha || '')) + '</div>' +
+        '<div id="cpS" style="font-size:12px;color:rgba(255,255,255,.7);letter-spacing:.12em;text-transform:uppercase;margin-top:6px">' + esc(meta.subtitle || '') + '</div>' +
+        '<div id="cpTg" style="font-style:italic;color:rgba(255,255,255,.65);margin-top:6px">' + esc(meta.tagline || '') + '</div>' +
+        '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text2)"><input type="checkbox" id="covShow" ' + (meta.showCover ? 'checked' : '') + ' style="width:16px;height:16px"> Mostrar portada</label></div>' +
+        '<div class="form-group"><label class="input-label">Fecha</label><input type="date" class="input" id="covDate" value="' + esc(meta.fecha || '') + '" oninput="document.getElementById(\'cpD\').textContent=formatDateFull(this.value)"></div>' +
+        '<div class="form-group"><label class="input-label">Título</label><input type="text" class="input" id="covT" value="' + esc(meta.titulo || '') + '" oninput="document.getElementById(\'cpT\').textContent=this.value||\'Título\'"></div>' +
+        '<div class="form-group"><label class="input-label">Subtítulo</label><input type="text" class="input" id="covS" value="' + esc(meta.subtitle || '') + '" oninput="document.getElementById(\'cpS\').textContent=this.value"></div>' +
+        '<div class="form-group"><label class="input-label">Frase (cursiva)</label><input type="text" class="input" id="covTg" value="' + esc(meta.tagline || '') + '" oninput="document.getElementById(\'cpTg\').textContent=this.value"></div>' +
+        '<div class="form-group"><label class="input-label">Tipografía</label><div id="fontGrid">' + fontOpts + '</div></div>' +
+        '<div class="form-group"><label class="input-label">Foto de portada</label><select class="input" id="covPhoto"><option value="">Ninguna</option>' +
+        getAllPhotos(d).map(function(p) { return '<option value="' + esc(p.id) + '" ' + (meta.coverId === p.id ? 'selected' : '') + '>' + esc(p.nombre) + '</option>'; }).join('') +
+        '</select></div></div>' +
+        '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doSaveCover(\'' + escJS(galId) + '\')">Guardar</button></div>'
+    );
+}
+function selectFont(id) {
+    _selFont = id;
+    document.querySelectorAll('.font-option').forEach(function(el) { el.classList.toggle('active', el.dataset.fid === id); });
+    var t = document.getElementById('cpT');
+    if (t) { t.style.cssText = 'color:#fff;' + getFontCSS(id, 28); }
+}
+async function doSaveCover(galId) {
+    var coverId = document.getElementById('covPhoto').value || '';
+    try {
+        if (coverId) { try { await drive('sync', { id: coverId }); } catch(e) {} }
+        await drive('guardar_meta', {
+            id: galId,
+            titulo: document.getElementById('covT').value,
+            subtitle: document.getElementById('covS').value,
+            tagline: document.getElementById('covTg').value,
+            fecha: document.getElementById('covDate').value,
+            font: _selFont,
+            showCover: document.getElementById('covShow').checked ? 'true' : 'false',
+            coverId: coverId
+        });
+        closeModal(); delete detalleCache[galId]; showToast('Portada guardada', 'check-circle'); renderGalleryDetail(galId);
+    } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); }
+}
+
+// ─── CONFIGURACIÓN ───────────────────────────────────────────────────────────
+function showSettings() {
+    openModal(
+        '<div class="modal-header"><h3>Configuración</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>' +
+        '<div class="modal-body">' +
+        '<div style="margin-bottom:20px"><label class="input-label">Nombre</label><input type="text" class="input" id="setName" value="' + esc(config.nombre) + '"></div>' +
+        '<div style="margin-bottom:20px"><label class="input-label">Enlace de contacto</label><input type="text" class="input" id="setContact" value="' + esc(config.contacto || '') + '" placeholder="https://wa.me/1234567890"><small style="font-size:11px;color:var(--text3);display:block;margin-top:4px">Se muestra cuando una galería expira.</small></div>' +
+        '<div style="margin-bottom:20px"><label class="input-label">URL del Apps Script</label><input type="text" class="input" id="setUrl" value="' + esc(DRIVE_URL) + '"></div>' +
+        '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doSaveSettings()">Guardar</button></div>'
+    );
+}
+async function doSaveSettings() {
+    var n = (document.getElementById('setName').value || '').trim();
+    if (!n) { showToast('Ingresa nombre', 'alert-circle'); return; }
+    var url  = (document.getElementById('setUrl').value || '').trim();
+    var cont = (document.getElementById('setContact').value || '').trim();
+    try {
+        await drive('config', { nombre: n, contacto: cont });
+        config.nombre = n; config.contacto = cont;
+        saveConfigCache(config); // FIX: actualizar caché al guardar
+        if (url) DRIVE_URL = url;
+        closeModal(); showToast('Guardado'); render();
+    } catch(e) { showToast('Error', 'alert-circle'); }
+}
+
+// ─── VISTA CLIENTE ───────────────────────────────────────────────────────────
+async function renderClientGallery(id) {
+    isShareView = true; downloadUnlocked = false;
+    document.getElementById('app').innerHTML =
+        '<div class="loading-state" style="min-height:100vh"><div class="spinner"></div><p>Cargando galería</p><span class="loading-timer" id="cT">0.0s</span></div>';
+    try { lucide.createIcons(); } catch(e) {}
+    var stop = startTimer('cT');
+
+    // FIX: usar caché de config aquí también
+    var cached = loadConfigCache();
+    if (cached) { config = cached; }
+    else { try { config = await drive('config'); saveConfigCache(config); } catch(e) {} }
+
+    var d;
+    try { d = await drive('detalle', { id: id }); } catch(e) {
+        stop();
+        document.getElementById('app').innerHTML = '<div class="not-found"><i data-lucide="image-off"></i><h2>Galería no encontrada</h2><p style="color:var(--text2);font-size:14px;margin-top:8px">El enlace puede estar incorrecto o la galería ya no existe.</p></div>';
+        try { lucide.createIcons(); } catch(e2) {}
+        return;
+    }
+    stop(); detalleCache[id] = d;
+
+    if (d.expirada) {
+        document.title = esc(d.nombre);
+        document.getElementById('app').innerHTML =
+            '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">' +
+            '<div class="expired-banner"><i data-lucide="lock"></i><h3>Galería expirada</h3><p>Esta galería ya no está disponible. Contacta al fotógrafo si necesitas acceso.</p>' +
+            (config.contacto ? '<button class="btn btn-primary" onclick="window.open(\'' + escJS(config.contacto) + '\',\'_blank\')"><i data-lucide="message-circle"></i> Contactar</button>' : '') +
+            '</div></div>';
+        try { lucide.createIcons(); } catch(e) {}
+        return;
+    }
+
+    document.title = esc(d.nombre) + ' — ' + esc(config.nombre);
+    var meta = d.meta || {};
+    if (meta.showCover && d.coverUrl) { renderClientCover(id, d); return; }
+    currentSectionId = 'all';
+    renderClientInner(id, d);
+}
+
+function renderClientCover(galId, d) {
+    var meta = d.meta || {};
+    var fontId = meta.font || 'playfair';
+    var title  = meta.titulo || d.nombre;
+    var date   = meta.fecha ? formatDateFull(meta.fecha) : '';
+    document.getElementById('app').innerHTML =
+        '<div class="cover-page">' +
+        '<div class="cover-bg ' + (d.coverUrl ? '' : 'cover-default') + '" style="' + (d.coverUrl ? 'background-image:url(\'' + esc(d.coverUrl) + '\')' : '') + '"></div>' +
+        '<div class="cover-overlay"></div>' +
+        '<div class="cover-content">' +
+        '<div class="cover-title" style="' + getFontCSS(fontId, 0) + ';font-size:clamp(36px,8vw,72px)">' + esc(title) + '</div>' +
+        (date ? '<div class="cover-subtitle">' + esc(date) + '</div>' : '') +
+        (meta.subtitle ? '<div class="cover-subtitle" style="margin-top:4px">' + esc(meta.subtitle) + '</div>' : '') +
+        (meta.tagline ? '<div class="cover-tagline">' + esc(meta.tagline) + '</div>' : '') +
+        '<button class="cover-btn" onclick="currentSectionId=\'all\';renderClientInner(\'' + escJS(galId) + '\',detalleCache[\'' + escJS(galId) + '\'])"><i data-lucide="images"></i> Ver galería</button>' +
+        '</div><div class="cover-photographer">Fotografía por <strong style="color:rgba(255,255,255,.65)">' + esc(config.nombre) + '</strong></div></div>';
+    try { lucide.createIcons(); } catch(e) {}
+}
+
+function renderClientInner(galId, d) {
+    var allP   = getAllPhotos(d);
+    var photos = getSectionPhotos(d, currentSectionId);
+
+    var secTabs = '<button class="section-tab ' + (currentSectionId === 'all' ? 'active' : '') + '" onclick="clientSwitch(\'' + escJS(galId) + '\',\'all\')">Todas <span class="count">' + allP.length + '</span></button>';
+    secTabs += (d.secciones || []).map(function(s) {
+        return '<button class="section-tab ' + (currentSectionId === s.id ? 'active' : '') + '" onclick="clientSwitch(\'' + escJS(galId) + '\',\'' + escJS(s.id) + '\')">' + esc(s.nombre) + ' <span class="count">' + (s.fotos || []).length + '</span></button>';
+    }).join('');
+
+    var photosHtml = !photos.length
+        ? '<div class="empty-state" style="padding:40px 20px"><div class="empty-state-icon"><i data-lucide="image"></i></div><h3>Sin fotos</h3></div>'
+        : '<div class="masonry">' + photos.map(function(p, i) {
+            return '<div class="masonry-item" style="animation-delay:' + Math.min(i * 0.03, 0.3) + 's" onclick="clientLightbox(\'' + escJS(galId) + '\',\'' + escJS(currentSectionId) + '\',' + i + ')"><img src="' + esc(p.url) + '" alt="Foto" loading="lazy"></div>';
+        }).join('') + '</div>';
+
+    var hasCover = (d.meta && d.meta.showCover)
+        ? '<button class="btn btn-ghost btn-sm" onclick="renderClientGallery(\'' + escJS(galId) + '\')"><i data-lucide="image"></i></button>'
+        : '';
+
+    document.getElementById('app').innerHTML =
+        '<div><header class="client-header">' +
+        '<div class="client-logo"><div class="client-logo-mark">' + esc(config.nombre.charAt(0).toUpperCase()) + '</div><div class="client-logo-text">' + esc(config.nombre) + '</div></div>' +
+        hasCover +
+        '<button class="client-download-btn" onclick="clientDownload(\'' + escJS(galId) + '\')"><i data-lucide="download"></i><span>Descargar</span></button>' +
+        '</header>' +
+        '<div class="client-info"><h1 style="font-family:var(--serif);font-size:clamp(22px,5vw,32px)">' + esc(d.nombre) + '</h1>' +
+        '<div class="meta"><span><i data-lucide="image"></i> ' + allP.length + '</span><div class="meta-dot"></div><span><i data-lucide="folder"></i> ' + (d.secciones || []).length + '</span></div></div>' +
+        '<div class="section-tabs" style="justify-content:center;max-width:600px;margin:0 auto 16px;padding:0 16px">' + secTabs + '</div>' +
+        photosHtml +
+        '<footer style="text-align:center;padding:24px 16px;color:var(--text3);font-size:11px">Fotografía por <strong style="color:var(--text2)">' + esc(config.nombre) + '</strong></footer></div>';
+    try { lucide.createIcons(); } catch(e) {}
+}
+
+function clientSwitch(gid, sid) { currentSectionId = sid; var d = detalleCache[gid]; if (d) renderClientInner(gid, d); }
+function clientLightbox(gid, sid, idx) { openLightbox(getSectionPhotos(detalleCache[gid], sid), idx); }
+
+function clientDownload(galId) {
+    if (downloadUnlocked) { doClientDL(galId); return; }
+    var meta = (detalleCache[galId] || {}).meta || {};
+    if (meta.downloadCode) { showCodeModal(galId); }
+    else { showToast('Descargas no disponibles', 'alert-circle'); }
+}
+
+function showCodeModal(galId) {
+    openModal(
+        '<div class="modal-header"><h3>Descargar fotos</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>' +
+        '<div class="modal-body" style="text-align:center">' +
+        '<div style="width:56px;height:56px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--text3)"><i data-lucide="lock" style="width:24px;height:24px"></i></div>' +
+        '<p style="font-size:15px;color:var(--text);margin-bottom:4px;font-weight:500">Ingresa tu código de descarga</p>' +
+        '<p style="font-size:13px;color:var(--text2);margin-bottom:20px">Este código te lo proporcionó tu fotógrafo.</p>' +
+        '<div class="code-input"><input type="text" class="input" id="codeInput" placeholder="ABC123" maxlength="6" style="text-transform:uppercase;letter-spacing:.3em;font-family:monospace;font-size:18px;font-weight:600"><button class="btn btn-primary" onclick="verifyCode(\'' + escJS(galId) + '\')">Verificar</button></div>' +
+        '<p id="codeError" style="font-size:13px;color:#dc2626;text-align:center;margin-top:12px;display:none">Código incorrecto.</p>' +
+        '</div>'
+    );
+    setTimeout(function() { var i = document.getElementById('codeInput'); if (i) { i.focus(); i.addEventListener('keydown', function(e) { if (e.key === 'Enter') verifyCode(galId); }); } }, 150);
+}
+
+// FIX: verifyCode sin variables `err` duplicadas
+async function verifyCode(galId) {
+    var code = (document.getElementById('codeInput').value || '').toUpperCase().trim();
+    var errEl = document.getElementById('codeError');
+    if (!code) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Ingresa un código.'; }
+        return;
+    }
+    try {
+        var r = await drive('verificar_codigo', { id: galId, codigo: code });
+        if (r.valido) {
+            downloadUnlocked = true;
+            closeModal();
+            showToast('¡Código correcto! Ya puedes descargar.', 'check-circle');
+            doClientDL(galId);
+        } else {
+            if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Código incorrecto. Verifica e intenta de nuevo.'; }
+        }
+    } catch(e) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Error al verificar. Intenta de nuevo.'; }
+    }
+}
+
+// FIX: doClientDL usa JSZip para descarga en un solo archivo ZIP
+async function doClientDL(galId) {
+    var d = detalleCache[galId];
+    var photos = getSectionPhotos(d, currentSectionId);
+    if (!photos.length) return;
+
+    // Si JSZip está disponible, crear ZIP real
+    if (typeof JSZip !== 'undefined') {
+        openModal(
+            '<div class="modal-body" style="text-align:center;padding:32px 24px">' +
+            '<div class="spinner" style="width:32px;height:32px;margin:0 auto 16px"></div>' +
+            '<p style="font-weight:500;margin-bottom:4px">Preparando descarga</p>' +
+            '<div class="dl-progress"><div class="dl-progress-bar"><div class="dl-progress-fill" id="dlFill"></div></div>' +
+            '<p class="dl-progress-text" id="dlTxt">0 / ' + photos.length + ' fotos</p></div>' +
+            '</div>'
+        );
+
+        var zip = new JSZip();
+        var folder = zip.folder(d.nombre || 'galeria');
+
+        for (var i = 0; i < photos.length; i++) {
+            try {
+                var resp = await fetch(photos[i].url);
+                var blob = await resp.blob();
+                folder.file(photos[i].nombre || ('foto_' + (i + 1) + '.jpg'), blob);
+            } catch(e) {
+                // foto individual falló, continuar
+            }
+            var pct = Math.round(((i + 1) / photos.length) * 100);
+            var fill = document.getElementById('dlFill');
+            var txt  = document.getElementById('dlTxt');
+            if (fill) fill.style.width = pct + '%';
+            if (txt)  txt.textContent = (i + 1) + ' / ' + photos.length + ' fotos';
+        }
+
+        try {
+            var zipBlob = await zip.generateAsync({ type: 'blob' });
+            var url = URL.createObjectURL(zipBlob);
+            var a = document.createElement('a');
+            a.href = url; a.download = (d.nombre || 'galeria') + '.zip';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+            closeModal();
+            showToast('ZIP descargado (' + photos.length + ' fotos)', 'download');
+        } catch(e) {
+            closeModal();
+            showToast('Error al crear ZIP', 'alert-circle');
+        }
+    } else {
+        // fallback: descarga individual con delay
+        showToast('Descargando ' + photos.length + ' fotos...', 'download');
+        photos.forEach(function(p, i) {
+            setTimeout(function() { downloadFile(p.url, p.nombre || 'foto_' + (i + 1) + '.jpg'); }, i * 400);
+        });
+    }
+}
+
+// ─── INICIO ───────────────────────────────────────────────────────────────────
+(function init() {
+    try {
+        var params = new URLSearchParams(location.search);
+        var gId = params.get('g');
+        if (gId) { isShareView = true; renderClientGallery(gId); return; }
+    } catch(e) {}
+    try { render(); } catch(e) {
+        console.error('Init:', e);
+        document.getElementById('app').innerHTML = '<div class="not-found"><i data-lucide="alert-triangle"></i><h2>Error al iniciar</h2><button class="btn btn-primary" onclick="render()">Reintentar</button></div>';
+        try { lucide.createIcons(); } catch(e2) {}
+    }
+})();
+</script>
+</body>
+</html>
