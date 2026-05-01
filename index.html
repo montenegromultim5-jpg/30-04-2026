@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Great+Vibes&family=Dancing+Script:wght@400;500;600;700&family=Satisfy&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- FIX: JSZip para descarga en archivo zip real -->
+    <!-- JSZip para descarga en archivo zip real -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -44,7 +44,6 @@
         .code-input{display:flex;gap:8px;margin-top:12px}.code-input input{flex:1;text-align:center;font-size:20px;letter-spacing:.3em;font-family:monospace;font-weight:600;text-transform:uppercase}
         .expired-banner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;background:linear-gradient(135deg,#fef2f2,#fff);border:2px solid #fecaca;border-radius:var(--radius-lg);margin:20px 8px;gap:16px}.expired-banner i{width:48px;height:48px;color:#dc2626}.expired-banner h3{font-size:20px;color:#991b1b;font-weight:600}.expired-banner p{color:#7f1d1d;font-size:14px;max-width:320px;line-height:1.6}
         .drive-hint{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--drive-light);border:1px solid #bfdbfe;border-radius:var(--radius-sm);font-size:13px;color:#1e40af;margin-bottom:16px;line-height:1.5}.drive-hint i{width:18px;height:18px;flex-shrink:0;margin-top:2px}
-        /* FIX: Barra de progreso de descarga */
         .dl-progress{background:var(--bg2);border-radius:var(--radius-sm);padding:16px;margin-top:12px}.dl-progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:8px 0}.dl-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;width:0%}.dl-progress-text{font-size:12px;color:var(--text2);text-align:center}
         .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:11px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:500;opacity:0;transition:all .4s var(--ease);pointer-events:none;display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.2)}.toast.show{transform:translateX(-50%) translateY(0);opacity:1}.toast i{width:16px;height:16px}
         .not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}.not-found i{width:48px;height:48px;color:var(--text3);margin-bottom:16px}.not-found h2{font-family:var(--serif);font-size:24px;margin-bottom:8px}
@@ -71,7 +70,6 @@ var config = { nombre: 'Tu Nombre', contacto: '' };
 // ─── CACHÉ ───────────────────────────────────────────────────────────────────
 var galeriasCache = null;
 var detalleCache  = {};
-// FIX: caché de config con TTL para evitar llamadas redundantes al script
 var CONFIG_TTL_MS = 60 * 60 * 1000; // 1 hora
 
 function loadConfigCache() {
@@ -97,11 +95,17 @@ var selectedMap      = new Map();
 var downloadUnlocked = false;
 var isShareView      = false;
 
-// FIX: detectar BASE_URL correctamente (sin IIFE incompleto)
+// Detectar BASE_URL correctamente
 (function detectBaseUrl() {
-    var o = location.origin;
-    if (o && o !== 'null' && o !== 'undefined' && o.indexOf('http') === 0) {
-        BASE_URL = o + location.pathname;
+    var origin = location.origin;
+    if (origin && origin !== 'null' && origin !== 'undefined' && origin.indexOf('http') === 0) {
+        BASE_URL = origin + location.pathname;
+    } else {
+        // fallback: usar la URL actual sin parámetros
+        var current = window.location.href;
+        var qIndex = current.indexOf('?');
+        BASE_URL = qIndex !== -1 ? current.substring(0, qIndex) : current;
+        if (BASE_URL.indexOf('http') !== 0) BASE_URL = '';
     }
 })();
 
@@ -114,21 +118,18 @@ var FONTS = [
     { id: 'satisfy',     name: 'Satisfy',              style: "font-family:'Satisfy',cursive;font-size:24px" }
 ];
 
-// FIX: _selFont se sincroniza al abrir el editor, no es solo variable global suelta
 var _selFont = 'playfair';
 
 // ─── UTILIDADES ──────────────────────────────────────────────────────────────
 function getBase() {
-    if (BASE_URL) {
-        var b = BASE_URL.replace(/#$/, '');
-        if (b.indexOf('http') === 0) return b;
+    if (BASE_URL && BASE_URL.indexOf('http') === 0) return BASE_URL;
+    var origin = location.origin;
+    if (origin && origin !== 'null' && origin !== 'undefined' && origin.indexOf('http') === 0) {
+        return origin + location.pathname;
     }
-    var o = location.origin;
-    if (!o || o === 'null' || o === 'undefined') return '';
-    return o + location.pathname;
+    return '';
 }
 
-// FIX: drive() con AbortController para timeout de 30s
 async function drive(action, params) {
     params = params || {};
     var url = DRIVE_URL + '?action=' + action;
@@ -152,7 +153,7 @@ function escJS(s) { if (s == null) return ''; return String(s).replace(/\\/g,'\\
 
 function shareLink(id) {
     var b = getBase();
-    if (!b || b.indexOf('http') !== 0) return '';
+    if (!b) return '';
     return b + (b.indexOf('?') === -1 ? '?g=' : '&g=') + id;
 }
 
@@ -185,9 +186,7 @@ function showToast(msg, icon) {
     t._t = setTimeout(function() { t.classList.remove('show'); }, 3000);
 }
 
-// FIX: downloadFile usando fetch+blob para evitar bloqueo del navegador
 function downloadFile(src, name) {
-    // Intenta blob primero (evita bloqueo de popups)
     fetch(src)
         .then(function(r) { return r.blob(); })
         .then(function(blob) {
@@ -197,7 +196,6 @@ function downloadFile(src, name) {
             setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
         })
         .catch(function() {
-            // fallback si CORS no permite blob
             var a = document.createElement('a'); a.href = src; a.download = name || 'foto.jpg'; a.target = '_blank';
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         });
@@ -216,7 +214,6 @@ function getFontCSS(id, size) {
     return "font-family:'" + (f ? f.name : 'Playfair Display') + "',serif;font-size:" + (size || 22) + "px;";
 }
 
-// FIX: startTimer retorna función de cleanup correcta incluso si el elemento desaparece
 function startTimer(elId) {
     var start = Date.now();
     var iv = setInterval(function() {
@@ -381,7 +378,6 @@ async function renderDashboard() {
 
     var stop = startTimer('dT');
 
-    // FIX: usar caché de config con TTL
     var cached = loadConfigCache();
     if (cached) { config = cached; }
     else {
@@ -466,7 +462,7 @@ async function showShare(galId) {
     var safeCode = meta.downloadCode.replace(/'/g, "\\'");
     var linkSection = hasUrl
         ? '<div style="margin-bottom:20px"><label class="input-label">Enlace de la galería</label><div class="share-link-box"><code>' + esc(link) + '</code><button class="btn btn-secondary btn-sm" onclick="copyText(\'' + safeLink + '\')" style="flex-shrink:0"><i data-lucide="copy"></i> Copiar</button></div><p style="font-size:12px;color:var(--text3);margin-top:-12px;margin-bottom:16px">Envía este enlace a tu cliente.</p></div>'
-        : '';
+        : '<div style="margin-bottom:20px;color:var(--text2);font-size:13px;background:var(--bg2);padding:12px;border-radius:var(--radius-sm)">No se pudo generar el enlace automático. Copia la URL de esta página y agrega <code>?g=' + esc(galId) + '</code> al final.</div>';
 
     openModal(
         '<div class="modal-header"><h3>Compartir Galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>' +
@@ -523,9 +519,10 @@ function renderGalleryInner(id, d) {
                 var sel = selectedMap.has(p.id);
                 var safePid = escJS(p.id);
                 var safeSecId = escJS(secId || '');
+                // CORRECCIÓN: arreglada la llamada a openLightbox con la sintaxis correcta
                 var clickAction = selectMode
                     ? 'toggleSelect(\'' + safePid + '\',\'' + safeSecId + '\')'
-                    : 'openLightbox(getSectionPhotos(detalleCache[\'' + escJS(id) + '\'],\'' + escJS(currentSectionId) + '\']),'+i+')';
+                    : 'openLightbox(getSectionPhotos(detalleCache[\'' + escJS(id) + '\'], \'' + escJS(currentSectionId) + '\'), ' + i + ')';
                 var checkAction = 'event.stopPropagation();if(!selectMode)return;toggleSelect(\'' + safePid + '\',\'' + safeSecId + '\')';
                 return '<div class="admin-photo-item ' + (sel ? 'selected' : '') + '" data-did="' + esc(p.id) + '" onclick="' + clickAction + '">' +
                     '<img src="' + esc(p.thumb || p.url) + '" alt="' + esc(p.nombre) + '" loading="lazy">' +
@@ -616,7 +613,6 @@ function showCoverEditor(galId) {
     if (!d.meta) d.meta = {};
     var meta = d.meta;
     var pBg = d.coverUrl ? 'background-image:url(\'' + esc(d.coverUrl) + '\')' : '';
-    // FIX: sincronizar _selFont con el valor guardado
     _selFont = meta.font || 'playfair';
 
     var fontOpts = FONTS.map(function(f) {
@@ -688,7 +684,7 @@ async function doSaveSettings() {
     try {
         await drive('config', { nombre: n, contacto: cont });
         config.nombre = n; config.contacto = cont;
-        saveConfigCache(config); // FIX: actualizar caché al guardar
+        saveConfigCache(config);
         if (url) DRIVE_URL = url;
         closeModal(); showToast('Guardado'); render();
     } catch(e) { showToast('Error', 'alert-circle'); }
@@ -702,7 +698,6 @@ async function renderClientGallery(id) {
     try { lucide.createIcons(); } catch(e) {}
     var stop = startTimer('cT');
 
-    // FIX: usar caché de config aquí también
     var cached = loadConfigCache();
     if (cached) { config = cached; }
     else { try { config = await drive('config'); saveConfigCache(config); } catch(e) {} }
@@ -810,7 +805,6 @@ function showCodeModal(galId) {
     setTimeout(function() { var i = document.getElementById('codeInput'); if (i) { i.focus(); i.addEventListener('keydown', function(e) { if (e.key === 'Enter') verifyCode(galId); }); } }, 150);
 }
 
-// FIX: verifyCode sin variables `err` duplicadas
 async function verifyCode(galId) {
     var code = (document.getElementById('codeInput').value || '').toUpperCase().trim();
     var errEl = document.getElementById('codeError');
@@ -833,13 +827,11 @@ async function verifyCode(galId) {
     }
 }
 
-// FIX: doClientDL usa JSZip para descarga en un solo archivo ZIP
 async function doClientDL(galId) {
     var d = detalleCache[galId];
     var photos = getSectionPhotos(d, currentSectionId);
     if (!photos.length) return;
 
-    // Si JSZip está disponible, crear ZIP real
     if (typeof JSZip !== 'undefined') {
         openModal(
             '<div class="modal-body" style="text-align:center;padding:32px 24px">' +
@@ -858,9 +850,7 @@ async function doClientDL(galId) {
                 var resp = await fetch(photos[i].url);
                 var blob = await resp.blob();
                 folder.file(photos[i].nombre || ('foto_' + (i + 1) + '.jpg'), blob);
-            } catch(e) {
-                // foto individual falló, continuar
-            }
+            } catch(e) {}
             var pct = Math.round(((i + 1) / photos.length) * 100);
             var fill = document.getElementById('dlFill');
             var txt  = document.getElementById('dlTxt');
@@ -882,7 +872,6 @@ async function doClientDL(galId) {
             showToast('Error al crear ZIP', 'alert-circle');
         }
     } else {
-        // fallback: descarga individual con delay
         showToast('Descargando ' + photos.length + ' fotos...', 'download');
         photos.forEach(function(p, i) {
             setTimeout(function() { downloadFile(p.url, p.nombre || 'foto_' + (i + 1) + '.jpg'); }, i * 400);
