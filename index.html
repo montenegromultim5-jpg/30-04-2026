@@ -10,12 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg: #ffffff;
             --bg2: #f7f6f3;
@@ -37,29 +32,8 @@
             --drive: #4285f4;
             --drive-light: #e8f0fe;
         }
-
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Botones */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; white-space: nowrap; }
         .btn i { width: 16px; height: 16px; }
         .btn-primary { background: var(--accent); color: #fff; }
         .btn-primary:hover { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -71,512 +45,90 @@
         .btn-ghost:hover { background: var(--bg2); color: var(--text); }
         .btn-sm { padding: 7px 14px; font-size: 13px; }
         .btn-icon { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: 50%; }
-
-        /* Inputs */
-        .input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            background: var(--bg);
-            outline: none;
-            transition: border-color 0.2s;
-        }
+        .input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--bg); outline: none; transition: border-color 0.2s; }
         .input:focus { border-color: var(--accent); }
-        .input-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text2);
-            margin-bottom: 6px;
-        }
+        .input-label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
         .form-group { margin-bottom: 16px; }
-
-        /* Layouts */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .admin-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .admin-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
         .admin-logo { display: flex; align-items: center; gap: 12px; }
-        .admin-logo-mark {
-            width: 34px; height: 34px;
-            border-radius: 8px;
-            background: var(--accent);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--serif);
-            font-size: 16px;
-            font-weight: 500;
-        }
+        .admin-logo-mark { width: 34px; height: 34px; border-radius: 8px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 16px; font-weight: 500; }
         .admin-logo-text { font-family: var(--serif); font-size: 18px; font-weight: 500; }
         .dashboard { padding-top: 32px; padding-bottom: 60px; }
-        .dashboard-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
+        .dashboard-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
         .dashboard-header h2 { font-size: 22px; font-weight: 600; }
         .dashboard-header h2 span { color: var(--text3); font-weight: 400; }
-
-        /* Tarjetas de galerías */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .gallery-card {
-            background: var(--bg);
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--border);
-            transition: all 0.25s;
-            cursor: pointer;
-            position: relative;
-        }
-        .gallery-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-            border-color: var(--border2);
-        }
-        .gallery-card-cover {
-            width: 100%;
-            aspect-ratio: 4/3;
-            object-fit: cover;
-            display: block;
-            background: var(--bg2);
-        }
-        .gallery-card-cover-placeholder {
-            width: 100%;
-            aspect-ratio: 4/3;
-            background: var(--bg2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text3);
-        }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .gallery-card { background: var(--bg); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); transition: all 0.25s; cursor: pointer; position: relative; }
+        .gallery-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--border2); }
+        .gallery-card-cover { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: var(--bg2); }
+        .gallery-card-cover-placeholder { width: 100%; aspect-ratio: 4/3; background: var(--bg2); display: flex; align-items: center; justify-content: center; color: var(--text3); }
         .gallery-card-body { padding: 16px; }
         .gallery-card-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-        .gallery-card-meta {
-            font-size: 13px;
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .gallery-card-meta { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .gallery-card-meta span { display: flex; align-items: center; gap: 4px; }
         .gallery-card-actions { padding: 0 16px 16px; display: flex; gap: 6px; }
-        .gallery-card-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Vista detalle admin */
-        .detail-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px 0 16px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .detail-back {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text2);
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
+        .gallery-card-badge { position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .detail-header { display: flex; align-items: center; justify-content: space-between; padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; gap: 16px; }
+        .detail-back { display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 14px; cursor: pointer; border: none; background: none; }
         .detail-back:hover { color: var(--text); }
         .detail-title { font-family: var(--serif); font-size: 24px; font-weight: 500; }
         .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        /* Tabs secciones */
-        .section-tabs {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-        .section-tab {
-            flex-shrink: 0;
-            padding: 8px 18px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text2);
-            cursor: pointer;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .section-tab.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
+        .section-tabs { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+        .section-tab { flex-shrink: 0; padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border: 1px solid var(--border); background: var(--bg); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .section-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         .section-tab .count { font-size: 11px; opacity: 0.7; }
-
-        /* Grid de fotos admin */
-        .admin-photos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 6px;
-        }
-        .admin-photo-item {
-            position: relative;
-            aspect-ratio: 1;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .admin-photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
+        .admin-photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px; }
+        .admin-photo-item { position: relative; aspect-ratio: 1; border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; }
+        .admin-photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .admin-photo-item:hover img { transform: scale(1.03); }
-        .photo-check {
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: rgba(0,0,0,0.2);
-            border: 2px solid rgba(255,255,255,0.7);
-            color: #fff;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
+        .photo-check { position: absolute; top: 6px; left: 6px; width: 24px; height: 24px; border-radius: 6px; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.7); color: #fff; display: none; align-items: center; justify-content: center; z-index: 2; }
         .select-mode .photo-check { display: flex; }
         .photo-check.checked { background: var(--accent); border-color: var(--accent); }
-        .photo-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.65));
-            padding: 8px;
-            display: flex;
-            gap: 4px;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 2;
-        }
-        .admin-photo-item:hover .photo-controls,
-        .select-mode .photo-controls { opacity: 1; }
-        .photo-controls button {
-            width: 26px;
-            height: 26px;
-            border-radius: 5px;
-            border: none;
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .photo-controls { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.65)); padding: 8px; display: flex; gap: 4px; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
+        .admin-photo-item:hover .photo-controls, .select-mode .photo-controls { opacity: 1; }
+        .photo-controls button { width: 26px; height: 26px; border-radius: 5px; border: none; background: rgba(255,255,255,0.15); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .photo-controls button.del:hover { background: rgba(220,38,38,0.8); }
-
-        /* Barra selección múltiple */
-        .selection-bar {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 14px;
-            display: flex;
-            gap: 12px;
-            z-index: 60;
-            transition: bottom 0.35s var(--ease);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
+        .selection-bar { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 14px; display: flex; gap: 12px; z-index: 60; transition: bottom 0.35s var(--ease); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
         .selection-bar.visible { bottom: 28px; }
-
-        /* Lightbox */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 300;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
+        .lightbox { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
         .lightbox.active { opacity: 1; visibility: visible; }
-        .lb-close, .lb-nav, .lb-action {
-            position: fixed;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            z-index: 301;
-        }
-        .lb-close {
-            top: 12px;
-            right: 12px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-        .lb-nav {
-            top: 50%;
-            transform: translateY(-50%);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-        }
+        .lb-close, .lb-nav, .lb-action { position: fixed; background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 301; }
+        .lb-close { top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; }
+        .lb-nav { top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; }
         .lb-nav.prev { left: 12px; }
         .lb-nav.next { right: 12px; }
-        .lb-img {
-            max-width: 95vw;
-            max-height: 90vh;
-            object-fit: contain;
-        }
-        .lb-counter {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            z-index: 301;
-        }
-        .lb-actions {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            display: flex;
-            gap: 6px;
-            z-index: 301;
-        }
-        .lb-action {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
+        .lb-img { max-width: 95vw; max-height: 90vh; object-fit: contain; }
+        .lb-counter { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 13px; color: rgba(255,255,255,0.5); z-index: 301; }
+        .lb-actions { position: fixed; bottom: 16px; right: 16px; display: flex; gap: 6px; z-index: 301; }
+        .lb-action { width: 38px; height: 38px; border-radius: 50%; }
+        .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: all 0.3s; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal {
-            background: var(--bg);
-            border-radius: var(--radius-lg);
-            max-width: 560px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.95) translateY(10px);
-            transition: transform 0.3s var(--ease);
-        }
+        .modal { background: var(--bg); border-radius: var(--radius-lg); max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s var(--ease); }
         .modal-overlay.active .modal { transform: scale(1) translateY(0); }
         .modal-header { display: flex; justify-content: space-between; padding: 24px 24px 0; }
         .modal-header h3 { font-size: 18px; font-weight: 600; }
         .modal-body { padding: 20px 24px; }
         .modal-footer { padding: 0 24px 24px; display: flex; gap: 8px; justify-content: flex-end; }
-
-        /* Vista cliente */
-        .client-header {
-            position: sticky;
-            top: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 20px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .client-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .client-logo-mark {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            background: var(--accent);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--serif);
-            font-size: 13px;
-        }
-        .client-download-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 14px;
-            border-radius: var(--radius-sm);
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .client-info {
-            text-align: center;
-            padding: 40px 20px 24px;
-        }
-        .client-info h1 {
-            font-weight: 500;
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
-        }
-        .meta {
-            color: var(--text2);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-        }
-        .masonry {
-            column-count: 2;
-            column-gap: 6px;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0 8px 60px;
-        }
-        .masonry-item {
-            break-inside: avoid;
-            margin-bottom: 6px;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(12px);
-            animation: fadeUp 0.4s var(--ease) forwards;
-        }
+        .client-header { position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 20px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+        .client-logo { display: flex; align-items: center; gap: 10px; }
+        .client-logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 13px; }
+        .client-download-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .client-info { text-align: center; padding: 40px 20px 24px; }
+        .client-info h1 { font-weight: 500; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .meta { color: var(--text2); font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .masonry { column-count: 2; column-gap: 6px; max-width: 600px; margin: 0 auto; padding: 0 8px 60px; }
+        .masonry-item { break-inside: avoid; margin-bottom: 6px; border-radius: 4px; overflow: hidden; cursor: pointer; opacity: 0; transform: translateY(12px); animation: fadeUp 0.4s var(--ease) forwards; }
         .masonry-item img { width: 100%; display: block; }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* Utilidades */
-        .loading-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            gap: 12px;
-            color: var(--text2);
-        }
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
+        .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 12px; color: var(--text2); }
+        .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .toast {
-            position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: var(--accent);
-            color: #fff;
-            padding: 11px 22px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 500;
-            opacity: 0;
-            transition: all 0.4s var(--ease);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
+        .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #fff; padding: 11px 22px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; z-index: 500; opacity: 0; transition: all 0.4s var(--ease); pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-        }
-        .empty-state-icon {
-            width: 64px;
-            height: 64px;
-            background: var(--bg2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: var(--text3);
-        }
-
-        @media (min-width: 769px) {
-            .masonry { column-count: 3; max-width: 900px; }
-        }
+        .empty-state { text-align: center; padding: 80px 20px; }
+        .empty-state-icon { width: 64px; height: 64px; background: var(--bg2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--text3); }
+        @media (min-width: 769px) { .masonry { column-count: 3; max-width: 900px; } }
     </style>
 </head>
 <body>
@@ -599,763 +151,132 @@ var activeGalId = '';
 var lbPhotos = [];
 var lbIndex = 0;
 var selectMode = false;
-var selectedMap = new Map(); // key: fotoId, value: sectionId
+var selectedMap = new Map();
 var downloadUnlocked = false;
+var isShareView = false;
 
 // ======================= UTILIDADES =======================
 function esc(s) { if (s == null) return ''; return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function escJS(s) { if (s == null) return ''; return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
-
-function showToast(msg, icon) {
-    icon = icon || 'check-circle';
-    var t = document.getElementById('toast');
-    t.innerHTML = '<i data-lucide="' + icon + '"></i>' + esc(msg);
-    t.classList.add('show');
-    lucide.createIcons({ nodes: [t] });
-    clearTimeout(t._timer);
-    t._timer = setTimeout(function() { t.classList.remove('show'); }, 3000);
-}
-
-function copyText(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        showToast('Copiado', 'copy');
-    }).catch(function() {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        showToast('Copiado', 'copy');
-    });
-}
-
-async function drive(action, params) {
-    params = params || {};
-    var url = DRIVE_URL + '?action=' + action;
-    for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
-    var controller = new AbortController();
-    var tid = setTimeout(function() { controller.abort(); }, 30000);
-    try {
-        var r = await fetch(url, { signal: controller.signal });
-        clearTimeout(tid);
-        var d = await r.json();
-        if (d.error) throw new Error(d.error);
-        return d;
-    } catch(e) {
-        clearTimeout(tid);
-        throw e;
-    }
-}
-
-function getBaseUrl() {
-    return window.location.href.split('?')[0];
-}
-
-function shareLink(id) {
-    return getBaseUrl() + (getBaseUrl().includes('?') ? '&' : '?') + 'g=' + id;
-}
-
-function getSectionPhotos(det, sid) {
-    if (!det || !det.secciones) return [];
-    if (sid === 'all') return det.secciones.reduce(function(acc, s) { return acc.concat(s.fotos || []); }, []);
-    var sec = det.secciones.find(function(s) { return s.id === sid; });
-    return sec ? (sec.fotos || []) : [];
-}
-
+function showToast(msg, icon) { icon = icon || 'check-circle'; var t = document.getElementById('toast'); t.innerHTML = '<i data-lucide="' + icon + '"></i>' + esc(msg); t.classList.add('show'); lucide.createIcons({ nodes: [t] }); clearTimeout(t._timer); t._timer = setTimeout(function() { t.classList.remove('show'); }, 3000); }
+function copyText(text) { navigator.clipboard.writeText(text).then(function() { showToast('Copiado', 'copy'); }).catch(function() { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copiado', 'copy'); }); }
+async function drive(action, params) { params = params || {}; var url = DRIVE_URL + '?action=' + action; for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); var controller = new AbortController(); var tid = setTimeout(function() { controller.abort(); }, 30000); try { var r = await fetch(url, { signal: controller.signal }); clearTimeout(tid); var d = await r.json(); if (d.error) throw new Error(d.error); return d; } catch(e) { clearTimeout(tid); throw e; } }
+function getBaseUrl() { return window.location.href.split('?')[0]; }
+function shareLink(id) { return getBaseUrl() + (getBaseUrl().includes('?') ? '&' : '?') + 'g=' + id; }
+function getSectionPhotos(det, sid) { if (!det || !det.secciones) return []; if (sid === 'all') return det.secciones.reduce(function(acc, s) { return acc.concat(s.fotos || []); }, []); var sec = det.secciones.find(function(s) { return s.id === sid; }); return sec ? (sec.fotos || []) : []; }
 function getAllPhotos(det) { return getSectionPhotos(det, 'all'); }
-
-function formatDateFull(d) {
-    if (!d) return '';
-    try {
-        var dt = new Date(d);
-        if (isNaN(dt)) return '';
-        var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        return dt.getDate() + ' de ' + meses[dt.getMonth()] + ', ' + dt.getFullYear();
-    } catch(e) { return ''; }
-}
+function formatDateFull(d) { if (!d) return ''; try { var dt = new Date(d); if (isNaN(dt)) return ''; var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']; return dt.getDate() + ' de ' + meses[dt.getMonth()] + ', ' + dt.getFullYear(); } catch(e) { return ''; } }
 
 // ======================= LIGHTBOX =======================
-function openLightbox(photos, idx) {
-    if (!photos || !photos.length) return;
-    lbPhotos = photos;
-    lbIndex = idx;
-    renderLightbox();
-    document.getElementById('lightbox').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
-}
-function renderLightbox() {
-    var lb = document.getElementById('lightbox');
-    var p = lbPhotos[lbIndex];
-    if (!p) { closeLightbox(); return; }
-    var dlBtn = downloadUnlocked ? '<button class="lb-action" onclick="downloadFile(lbPhotos[lbIndex].url, lbPhotos[lbIndex].nombre)"><i data-lucide="download"></i></button>' : '';
-    lb.innerHTML = `
-        <button class="lb-close" onclick="closeLightbox()"><i data-lucide="x"></i></button>
-        <button class="lb-nav prev" onclick="lbNav(-1)"><i data-lucide="chevron-left"></i></button>
-        <button class="lb-nav next" onclick="lbNav(1)"><i data-lucide="chevron-right"></i></button>
-        <img class="lb-img" src="${esc(p.url)}" alt="Foto">
-        <div class="lb-counter">${lbIndex+1} / ${lbPhotos.length}</div>
-        <div class="lb-actions">${dlBtn}</div>
-    `;
-    lucide.createIcons({ nodes: [lb] });
-}
-function lbNav(d) {
-    lbIndex = (lbIndex + d + lbPhotos.length) % lbPhotos.length;
-    renderLightbox();
-}
-document.addEventListener('keydown', function(e) {
-    if (!document.getElementById('lightbox').classList.contains('active')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') lbNav(-1);
-    if (e.key === 'ArrowRight') lbNav(1);
-});
-
-function downloadFile(url, name) {
-    fetch(url).then(r => r.blob()).then(blob => {
-        var a = document.createElement('a');
-        var objUrl = URL.createObjectURL(blob);
-        a.href = objUrl;
-        a.download = name || 'foto.jpg';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(objUrl);
-    }).catch(() => {
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = name || 'foto.jpg';
-        a.target = '_blank';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    });
-}
+function openLightbox(photos, idx) { if (!photos || !photos.length) return; lbPhotos = photos; lbIndex = idx; renderLightbox(); document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; }
+function renderLightbox() { var lb = document.getElementById('lightbox'); var p = lbPhotos[lbIndex]; if (!p) { closeLightbox(); return; } var dlBtn = downloadUnlocked ? '<button class="lb-action" onclick="downloadFile(lbPhotos[lbIndex].url, lbPhotos[lbIndex].nombre)"><i data-lucide="download"></i></button>' : ''; lb.innerHTML = `<button class="lb-close" onclick="closeLightbox()"><i data-lucide="x"></i></button><button class="lb-nav prev" onclick="lbNav(-1)"><i data-lucide="chevron-left"></i></button><button class="lb-nav next" onclick="lbNav(1)"><i data-lucide="chevron-right"></i></button><img class="lb-img" src="${esc(p.url)}" alt="Foto"><div class="lb-counter">${lbIndex+1} / ${lbPhotos.length}</div><div class="lb-actions">${dlBtn}</div>`; lucide.createIcons({ nodes: [lb] }); }
+function lbNav(d) { lbIndex = (lbIndex + d + lbPhotos.length) % lbPhotos.length; renderLightbox(); }
+document.addEventListener('keydown', function(e) { if (!document.getElementById('lightbox').classList.contains('active')) return; if (e.key === 'Escape') closeLightbox(); if (e.key === 'ArrowLeft') lbNav(-1); if (e.key === 'ArrowRight') lbNav(1); });
+function downloadFile(url, name) { fetch(url).then(r => r.blob()).then(blob => { var a = document.createElement('a'); var objUrl = URL.createObjectURL(blob); a.href = objUrl; a.download = name || 'foto.jpg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(objUrl); }).catch(() => { var a = document.createElement('a'); a.href = url; a.download = name || 'foto.jpg'; a.target = '_blank'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }); }
 
 // ======================= MODALES =======================
-function openModal(html) {
-    var m = document.getElementById('modal');
-    m.innerHTML = '<div class="modal">' + html + '</div>';
-    m.classList.add('active');
-    lucide.createIcons({ nodes: [m] });
-}
-function closeModal() {
-    document.getElementById('modal').classList.remove('active');
-}
-document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target.id === 'modal') closeModal();
-});
+function openModal(html) { var m = document.getElementById('modal'); m.innerHTML = '<div class="modal">' + html + '</div>'; m.classList.add('active'); lucide.createIcons({ nodes: [m] }); }
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target.id === 'modal') closeModal(); });
 
 // ======================= ADMIN: GESTIÓN GALERÍAS =======================
 async function renderDashboard() {
-    document.getElementById('app').innerHTML = `
-        <div style="min-height:100vh">
-            <header class="admin-header">
-                <div class="admin-logo">
-                    <div class="admin-logo-mark">M</div>
-                    <div class="admin-logo-text">${esc(config.nombre)}</div>
-                </div>
-                <div><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div>
-            </header>
-            <div class="container dashboard">
-                <div class="loading-state"><div class="spinner"></div><p>Cargando galerías...</p></div>
-            </div>
-        </div>
-    `;
+    document.getElementById('app').innerHTML = `<div style="min-height:100vh"><header class="admin-header"><div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">${esc(config.nombre)}</div></div><div><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container dashboard"><div class="loading-state"><div class="spinner"></div><p>Cargando galerías...</p></div></div></div>`;
     lucide.createIcons();
-
-    try {
-        var cfg = await drive('config');
-        config = cfg;
-        localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: cfg }));
-    } catch(e) {}
-
-    try {
-        galeriasCache = await drive('galerias');
-    } catch(e) {
-        document.getElementById('app').innerHTML = `
-            <div class="container dashboard">
-                <div class="empty-state"><div class="empty-state-icon"><i data-lucide="cloud-off"></i></div><h3>Error de conexión</h3><p>Verifica la URL del Apps Script y que tenga acceso público.</p><button class="btn btn-primary" onclick="renderDashboard()">Reintentar</button></div>
-            </div>
-        `;
-        return;
-    }
-
+    try { var cfg = await drive('config'); config = cfg; localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: cfg })); } catch(e) {}
+    try { galeriasCache = await drive('galerias'); } catch(e) { document.getElementById('app').innerHTML = `<div class="container dashboard"><div class="empty-state"><div class="empty-state-icon"><i data-lucide="cloud-off"></i></div><h3>Error de conexión</h3><p>Verifica la URL del Apps Script y que tenga acceso público.</p><button class="btn btn-primary" onclick="renderDashboard()">Reintentar</button></div></div>`; return; }
     var gals = galeriasCache;
     var cards = '';
-    if (!gals.length) {
-        cards = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="folder-plus"></i></div><h3>Sin galerías</h3><p>Crea una nueva o agrega carpetas en Drive.</p><button class="btn btn-primary" onclick="showCreateGal()">Nueva galería</button></div>`;
-    } else {
-        cards = `<div class="gallery-grid">` + gals.map(gal => {
-            var meta = gal.meta || {};
-            var cover = meta.coverId ? `https://lh3.googleusercontent.com/d/${meta.coverId}=s640` : '';
-            var coverHtml = cover ? `<img class="gallery-card-cover" src="${cover}" loading="lazy">` : `<div class="gallery-card-cover-placeholder"><i data-lucide="folder"></i></div>`;
-            var badge = '';
-            if (gal.expirada) badge = `<div class="gallery-card-badge" style="background:#dc2626;color:#fff"><i data-lucide="clock"></i> Expirada</div>`;
-            else if (meta.showCover) badge = `<div class="gallery-card-badge" style="background:rgba(0,0,0,0.6);color:#fff">Portada</div>`;
-            return `
-                <div class="gallery-card" onclick="navigateToGallery('${escJS(gal.id)}')">
-                    ${coverHtml}
-                    ${badge}
-                    <div class="gallery-card-body">
-                        <div class="gallery-card-name">${esc(gal.nombre)}</div>
-                        <div class="gallery-card-meta"><span><i data-lucide="image"></i> ${gal.fotos}</span></div>
-                    </div>
-                    <div class="gallery-card-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-primary btn-sm" onclick="showShare('${escJS(gal.id)}')"><i data-lucide="share-2"></i> Compartir</button>
-                        <button class="btn btn-danger btn-sm btn-icon" onclick="confirmDeleteGal('${escJS(gal.id)}','${escJS(gal.nombre)}')"><i data-lucide="trash-2"></i></button>
-                    </div>
-                </div>
-            `;
-        }).join('') + `</div>`;
-    }
-
-    document.getElementById('app').innerHTML = `
-        <div style="min-height:100vh">
-            <header class="admin-header">
-                <div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">${esc(config.nombre)}</div></div>
-                <div><button class="btn btn-ghost btn-icon" onclick="renderDashboard()"><i data-lucide="refresh-cw"></i></button><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div>
-            </header>
-            <div class="container dashboard">
-                <div class="dashboard-header"><h2>Mis Galerías <span>(${gals.length})</span></h2><button class="btn btn-primary" onclick="showCreateGal()"><i data-lucide="plus"></i> Nueva</button></div>
-                ${cards}
-            </div>
-        </div>
-    `;
+    if (!gals.length) { cards = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="folder-plus"></i></div><h3>Sin galerías</h3><p>Crea una nueva o agrega carpetas en Drive.</p><button class="btn btn-primary" onclick="showCreateGal()">Nueva galería</button></div>`; } else { cards = `<div class="gallery-grid">` + gals.map(gal => { var meta = gal.meta || {}; var cover = meta.coverId ? `https://lh3.googleusercontent.com/d/${meta.coverId}=s640` : ''; var coverHtml = cover ? `<img class="gallery-card-cover" src="${cover}" loading="lazy">` : `<div class="gallery-card-cover-placeholder"><i data-lucide="folder"></i></div>`; var badge = ''; if (gal.expirada) badge = `<div class="gallery-card-badge" style="background:#dc2626;color:#fff"><i data-lucide="clock"></i> Expirada</div>`; else if (meta.showCover) badge = `<div class="gallery-card-badge" style="background:rgba(0,0,0,0.6);color:#fff">Portada</div>`; return `<div class="gallery-card" onclick="navigateToGallery('${escJS(gal.id)}')">${coverHtml}${badge}<div class="gallery-card-body"><div class="gallery-card-name">${esc(gal.nombre)}</div><div class="gallery-card-meta"><span><i data-lucide="image"></i> ${gal.fotos}</span></div></div><div class="gallery-card-actions" onclick="event.stopPropagation()"><button class="btn btn-primary btn-sm" onclick="showShare('${escJS(gal.id)}')"><i data-lucide="share-2"></i> Compartir</button><button class="btn btn-danger btn-sm btn-icon" onclick="confirmDeleteGal('${escJS(gal.id)}','${escJS(gal.nombre)}')"><i data-lucide="trash-2"></i></button></div></div>`; }).join('') + `</div>`; }
+    document.getElementById('app').innerHTML = `<div style="min-height:100vh"><header class="admin-header"><div class="admin-logo"><div class="admin-logo-mark">M</div><div class="admin-logo-text">${esc(config.nombre)}</div></div><div><button class="btn btn-ghost btn-icon" onclick="renderDashboard()"><i data-lucide="refresh-cw"></i></button><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container dashboard"><div class="dashboard-header"><h2>Mis Galerías <span>(${gals.length})</span></h2><button class="btn btn-primary" onclick="showCreateGal()"><i data-lucide="plus"></i> Nueva</button></div>${cards}</div></div>`;
     lucide.createIcons();
 }
+function navigateToGallery(id) { location.hash = '/gallery/' + id; render(); }
+function showCreateGal() { openModal(`<div class="modal-header"><h3>Nueva galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="newGalName" placeholder="Ej: Boda María y Juan"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="createGallery()">Crear</button></div>`); }
+async function createGallery() { var name = document.getElementById('newGalName').value.trim(); if (!name) { showToast('Ingresa un nombre', 'alert-circle'); return; } try { await drive('crear_galeria', { nombre: name }); closeModal(); galeriasCache = null; renderDashboard(); showToast('Galería creada', 'check-circle'); } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); } }
+function confirmDeleteGal(id, name) { openModal(`<div class="modal-body"><div class="empty-state-icon" style="background:#fee2e2;color:#dc2626"><i data-lucide="trash-2"></i></div><h3>¿Eliminar "${esc(name)}"?</h3><p style="margin-top:8px">Esta acción no se puede deshacer.</p></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="deleteGallery('${escJS(id)}')">Eliminar</button></div>`); }
+async function deleteGallery(id) { try { await drive('eliminar_galeria', { id: id }); closeModal(); galeriasCache = null; renderDashboard(); showToast('Eliminada', 'trash-2'); } catch(e) { showToast('Error', 'alert-circle'); } }
 
-function navigateToGallery(id) {
-    location.hash = '/gallery/' + id;
-    render();
+// ======================= COMPARTIR Y PREVISUALIZACIÓN =======================
+function previewClientGallery(galId) {
+    var url = shareLink(galId);
+    window.open(url, '_blank');
 }
-
-function showCreateGal() {
-    openModal(`<div class="modal-header"><h3>Nueva galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="newGalName" placeholder="Ej: Boda María y Juan"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="createGallery()">Crear</button></div>`);
-}
-
-async function createGallery() {
-    var name = document.getElementById('newGalName').value.trim();
-    if (!name) { showToast('Ingresa un nombre', 'alert-circle'); return; }
-    try {
-        await drive('crear_galeria', { nombre: name });
-        closeModal();
-        galeriasCache = null;
-        renderDashboard();
-        showToast('Galería creada', 'check-circle');
-    } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); }
-}
-
-function confirmDeleteGal(id, name) {
-    openModal(`<div class="modal-body"><div class="empty-state-icon" style="background:#fee2e2;color:#dc2626"><i data-lucide="trash-2"></i></div><h3>¿Eliminar "${esc(name)}"?</h3><p style="margin-top:8px">Esta acción no se puede deshacer.</p></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="deleteGallery('${escJS(id)}')">Eliminar</button></div>`);
-}
-async function deleteGallery(id) {
-    try {
-        await drive('eliminar_galeria', { id: id });
-        closeModal();
-        galeriasCache = null;
-        renderDashboard();
-        showToast('Eliminada', 'trash-2');
-    } catch(e) { showToast('Error', 'alert-circle'); }
-}
-
-// ======================= COMPARTIR =======================
 async function showShare(galId) {
     var d = detalleCache[galId];
-    if (!d) {
-        try {
-            showToast('Cargando...', 'loader');
-            d = await drive('detalle', { id: galId });
-            detalleCache[galId] = d;
-        } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); return; }
-    }
+    if (!d) { try { showToast('Cargando...', 'loader'); d = await drive('detalle', { id: galId }); detalleCache[galId] = d; } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); return; } }
     if (!d.meta) d.meta = {};
-    if (!d.meta.downloadCode) {
-        try {
-            var r = await drive('generar_codigo', { id: galId });
-            d.meta.downloadCode = r.codigo;
-            detalleCache[galId].meta.downloadCode = r.codigo;
-        } catch(e) { showToast('Error al generar código', 'alert-circle'); return; }
-    }
+    if (!d.meta.downloadCode) { try { var r = await drive('generar_codigo', { id: galId }); d.meta.downloadCode = r.codigo; detalleCache[galId].meta.downloadCode = r.codigo; } catch(e) { showToast('Error al generar código', 'alert-circle'); return; } }
     var link = shareLink(galId);
     var code = d.meta.downloadCode;
-    openModal(`
-        <div class="modal-header"><h3>Compartir galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>
-        <div class="modal-body">
-            <div class="form-group"><label class="input-label">Enlace para el cliente</label><div class="share-link-box" style="display:flex;gap:8px;background:var(--bg2);padding:10px;border-radius:8px"><code style="flex:1;font-size:12px">${esc(link)}</code><button class="btn btn-secondary btn-sm" onclick="copyText('${escJS(link)}')">Copiar</button></div></div>
-            <div class="form-group"><label class="input-label">Código de descarga</label><div class="code-display" style="background:#1a1a1a;color:#fff;padding:16px;text-align:center;border-radius:8px"><div style="font-size:12px;opacity:0.7">Código para descargar</div><div style="font-size:32px;letter-spacing:4px;font-family:monospace">${esc(code)}</div><button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="copyText('${escJS(code)}')">Copiar código</button></div></div>
-            <div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:13px">📌 El cliente abre el enlace, explora las fotos y para descargar necesita este código.</div>
-        </div>
-        <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal()">Cerrar</button></div>
-    `);
+    openModal(`<div class="modal-header"><h3>Compartir galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Enlace para el cliente</label><div class="share-link-box" style="display:flex;gap:8px;background:var(--bg2);padding:10px;border-radius:8px"><code style="flex:1;font-size:12px">${esc(link)}</code><button class="btn btn-secondary btn-sm" onclick="copyText('${escJS(link)}')">Copiar</button></div></div><div class="form-group"><label class="input-label">Código de descarga</label><div class="code-display" style="background:#1a1a1a;color:#fff;padding:16px;text-align:center;border-radius:8px"><div style="font-size:12px;opacity:0.7">Código para descargar</div><div style="font-size:32px;letter-spacing:4px;font-family:monospace">${esc(code)}</div><button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="copyText('${escJS(code)}')">Copiar código</button></div></div><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:13px">📌 El cliente abre el enlace, explora las fotos y para descargar necesita este código.</div></div><div class="modal-footer"><button class="btn btn-primary" onclick="closeModal()">Cerrar</button></div>`);
 }
 
 // ======================= ADMIN: DETALLE GALERÍA =======================
 async function renderGalleryDetail(id) {
-    activeGalId = id;
-    currentSectionId = 'all';
-    selectMode = false;
-    selectedMap.clear();
-    updateSelBar();
-
-    document.getElementById('app').innerHTML = `
-        <div style="min-height:100vh">
-            <header class="admin-header">
-                <button class="detail-back" onclick="navigateToDashboard()"><i data-lucide="arrow-left"></i> Galerías</button>
-                <div><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div>
-            </header>
-            <div class="container"><div class="loading-state"><div class="spinner"></div><p>Cargando galería...</p></div></div>
-        </div>
-    `;
+    activeGalId = id; currentSectionId = 'all'; selectMode = false; selectedMap.clear(); updateSelBar();
+    document.getElementById('app').innerHTML = `<div style="min-height:100vh"><header class="admin-header"><button class="detail-back" onclick="navigateToDashboard()"><i data-lucide="arrow-left"></i> Galerías</button><div><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container"><div class="loading-state"><div class="spinner"></div><p>Cargando galería...</p></div></div></div>`;
     lucide.createIcons();
-    try {
-        var d = await drive('detalle', { id: id });
-        detalleCache[id] = d;
-        renderGalleryInner(id, d);
-    } catch(e) {
-        document.getElementById('app').innerHTML = `<div class="container"><div class="empty-state"><h3>Error al cargar</h3><button class="btn btn-primary" onclick="renderGalleryDetail('${escJS(id)}')">Reintentar</button></div></div>`;
-    }
+    try { var d = await drive('detalle', { id: id }); detalleCache[id] = d; renderGalleryInner(id, d); } catch(e) { document.getElementById('app').innerHTML = `<div class="container"><div class="empty-state"><h3>Error al cargar</h3><button class="btn btn-primary" onclick="renderGalleryDetail('${escJS(id)}')">Reintentar</button></div></div>`; }
 }
-
-function navigateToDashboard() {
-    location.hash = '/';
-    render();
-}
-
+function navigateToDashboard() { location.hash = '/'; render(); }
 function renderGalleryInner(id, d) {
     var allPhotos = getAllPhotos(d);
     var photos = getSectionPhotos(d, currentSectionId);
     var isAll = currentSectionId === 'all';
-
     var tabs = `<button class="section-tab ${isAll ? 'active' : ''}" onclick="switchSection('${escJS(id)}','all')">Todas <span class="count">${allPhotos.length}</span></button>`;
     tabs += (d.secciones || []).map(s => `<button class="section-tab ${currentSectionId === s.id ? 'active' : ''}" onclick="switchSection('${escJS(id)}','${escJS(s.id)}')">${esc(s.nombre)} <span class="count">${(s.fotos || []).length}</span></button>`).join('');
-
     var photosHtml = '';
-    if (!photos.length) {
-        photosHtml = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="image-plus"></i></div><h3>Sin fotos</h3><p>Sube fotos a la carpeta "${esc(d.nombre)}" en Drive y recarga.</p><button class="btn btn-secondary" onclick="renderGalleryDetail('${escJS(id)}')">Recargar</button></div>`;
-    } else {
-        photosHtml = `<div class="admin-photos-grid ${selectMode ? 'select-mode' : ''}">` + photos.map((p, idx) => {
-            var secId = isAll ? findSectionIdByPhotoIndex(d, idx) : currentSectionId;
-            var clickAction = selectMode ? `toggleSelectPhoto('${escJS(p.id)}','${escJS(secId)}')` : `openLightbox(getSectionPhotos(detalleCache['${escJS(id)}'], '${escJS(currentSectionId)}'), ${idx})`;
-            var checked = selectedMap.has(p.id);
-            return `
-                <div class="admin-photo-item" data-did="${esc(p.id)}" onclick="${clickAction}">
-                    <img src="${esc(p.thumb || p.url)}" loading="lazy">
-                    <div class="photo-check ${checked ? 'checked' : ''}" onclick="event.stopPropagation();toggleSelectPhoto('${escJS(p.id)}','${escJS(secId)}')"><i data-lucide="check"></i></div>
-                    <div class="photo-controls" onclick="event.stopPropagation()">
-                        <button onclick="showMovePhoto('${escJS(id)}','${escJS(p.id)}')"><i data-lucide="folder-input"></i></button>
-                        <button class="del" onclick="deletePhoto('${escJS(id)}','${escJS(p.id)}')"><i data-lucide="trash-2"></i></button>
-                    </div>
-                </div>
-            `;
-        }).join('') + `</div>`;
-    }
-
-    document.getElementById('app').innerHTML = `
-        <div style="min-height:100vh">
-            <header class="admin-header">
-                <button class="detail-back" onclick="navigateToDashboard()"><i data-lucide="arrow-left"></i> Galerías</button>
-                <div><button class="btn btn-ghost btn-icon" onclick="renderGalleryDetail('${escJS(id)}')"><i data-lucide="refresh-cw"></i></button><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div>
-            </header>
-            <div class="container">
-                <div class="detail-header">
-                    <div>
-                        <div class="detail-title">${esc(d.nombre)}</div>
-                        <div style="font-size:14px;color:var(--text2)">${allPhotos.length} fotos · ${d.secciones.length} secciones</div>
-                    </div>
-                    <div class="detail-actions">
-                        <button class="btn btn-primary btn-sm" onclick="showShare('${escJS(id)}')"><i data-lucide="share-2"></i> Compartir</button>
-                        <button class="btn btn-secondary btn-sm" onclick="showCoverEditor('${escJS(id)}')"><i data-lucide="image"></i> Portada</button>
-                        <button class="btn btn-secondary btn-sm" onclick="showAddSection('${escJS(id)}')"><i data-lucide="folder-plus"></i> Sección</button>
-                        <button class="btn btn-danger btn-sm" onclick="confirmDeleteGal('${escJS(id)}','${escJS(d.nombre)}')"><i data-lucide="trash-2"></i></button>
-                    </div>
-                </div>
-                <div id="selBanner" class="select-banner" style="display:${selectMode ? 'flex' : 'none'};background:#eff6ff;padding:12px;border-radius:8px;margin-bottom:16px;align-items:center;gap:12px">
-                    <i data-lucide="mouse-pointer-click"></i> <span><strong>Modo selección:</strong> Haz clic en las fotos para seleccionarlas</span>
-                    <button class="btn btn-ghost btn-sm" onclick="exitSelectMode()">Salir</button>
-                </div>
-                <div class="section-tabs">${tabs}</div>
-                ${photosHtml}
-            </div>
-        </div>
-    `;
-    lucide.createIcons();
-    updateSelBar();
+    if (!photos.length) { photosHtml = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="image-plus"></i></div><h3>Sin fotos</h3><p>Sube fotos a la carpeta "${esc(d.nombre)}" en Drive y recarga.</p><button class="btn btn-secondary" onclick="renderGalleryDetail('${escJS(id)}')">Recargar</button></div>`; } else { photosHtml = `<div class="admin-photos-grid ${selectMode ? 'select-mode' : ''}">` + photos.map((p, idx) => { var secId = isAll ? findSectionIdByPhotoIndex(d, idx) : currentSectionId; var clickAction = selectMode ? `toggleSelectPhoto('${escJS(p.id)}','${escJS(secId)}')` : `openLightbox(getSectionPhotos(detalleCache['${escJS(id)}'], '${escJS(currentSectionId)}'), ${idx})`; var checked = selectedMap.has(p.id); return `<div class="admin-photo-item" data-did="${esc(p.id)}" onclick="${clickAction}"><img src="${esc(p.thumb || p.url)}" loading="lazy"><div class="photo-check ${checked ? 'checked' : ''}" onclick="event.stopPropagation();toggleSelectPhoto('${escJS(p.id)}','${escJS(secId)}')"><i data-lucide="check"></i></div><div class="photo-controls" onclick="event.stopPropagation()"><button onclick="showMovePhoto('${escJS(id)}','${escJS(p.id)}')"><i data-lucide="folder-input"></i></button><button class="del" onclick="deletePhoto('${escJS(id)}','${escJS(p.id)}')"><i data-lucide="trash-2"></i></button></div></div>`; }).join('') + `</div>`; }
+    document.getElementById('app').innerHTML = `<div style="min-height:100vh"><header class="admin-header"><button class="detail-back" onclick="navigateToDashboard()"><i data-lucide="arrow-left"></i> Galerías</button><div><button class="btn btn-ghost btn-icon" onclick="renderGalleryDetail('${escJS(id)}')"><i data-lucide="refresh-cw"></i></button><button class="btn btn-ghost btn-icon" onclick="showSettings()"><i data-lucide="settings"></i></button></div></header><div class="container"><div class="detail-header"><div><div class="detail-title">${esc(d.nombre)}</div><div style="font-size:14px;color:var(--text2)">${allPhotos.length} fotos · ${d.secciones.length} secciones</div></div><div class="detail-actions"><button class="btn btn-primary btn-sm" onclick="showShare('${escJS(id)}')"><i data-lucide="share-2"></i> Compartir</button><button class="btn btn-secondary btn-sm" onclick="previewClientGallery('${escJS(id)}')"><i data-lucide="eye"></i> Vista previa</button><button class="btn btn-secondary btn-sm" onclick="showCoverEditor('${escJS(id)}')"><i data-lucide="image"></i> Portada</button><button class="btn btn-secondary btn-sm" onclick="showAddSection('${escJS(id)}')"><i data-lucide="folder-plus"></i> Sección</button><button class="btn btn-danger btn-sm" onclick="confirmDeleteGal('${escJS(id)}','${escJS(d.nombre)}')"><i data-lucide="trash-2"></i></button></div></div><div id="selBanner" class="select-banner" style="display:${selectMode ? 'flex' : 'none'};background:#eff6ff;padding:12px;border-radius:8px;margin-bottom:16px;align-items:center;gap:12px"><i data-lucide="mouse-pointer-click"></i> <span><strong>Modo selección:</strong> Haz clic en las fotos para seleccionarlas</span><button class="btn btn-ghost btn-sm" onclick="exitSelectMode()">Salir</button></div><div class="section-tabs">${tabs}</div>${photosHtml}</div></div>`;
+    lucide.createIcons(); updateSelBar();
 }
-
-function findSectionIdByPhotoIndex(det, idx) {
-    var count = 0;
-    for (var s of det.secciones) {
-        for (var f of s.fotos) {
-            if (count === idx) return s.id;
-            count++;
-        }
-    }
-    return null;
-}
-function switchSection(gid, sid) {
-    currentSectionId = sid;
-    renderGalleryInner(gid, detalleCache[gid]);
-}
-
-function toggleSelectPhoto(fotoId, secId) {
-    if (selectedMap.has(fotoId)) selectedMap.delete(fotoId);
-    else selectedMap.set(fotoId, secId);
-    updateCheckboxes();
-    updateSelBar();
-}
-function updateCheckboxes() {
-    document.querySelectorAll('.admin-photo-item').forEach(el => {
-        var did = el.dataset.did;
-        var chk = el.querySelector('.photo-check');
-        if (did && chk) {
-            if (selectedMap.has(did)) {
-                el.classList.add('selected');
-                chk.classList.add('checked');
-            } else {
-                el.classList.remove('selected');
-                chk.classList.remove('checked');
-            }
-        }
-    });
-}
-function updateSelBar() {
-    var bar = document.getElementById('selBar');
-    if (!bar) return;
-    var count = selectedMap.size;
-    if (count > 0 && selectMode) {
-        bar.style.display = 'flex';
-        bar.innerHTML = `<span>${count} seleccionada${count !== 1 ? 's' : ''}</span>
-                         <button class="btn btn-ghost btn-sm" onclick="exitSelectMode()"><i data-lucide="x"></i> Cancelar</button>
-                         <button class="btn btn-primary btn-sm" onclick="bulkMovePhotos()"><i data-lucide="folder-input"></i> Mover</button>
-                         <button class="btn btn-danger btn-sm" onclick="bulkDeletePhotos()"><i data-lucide="trash-2"></i> Eliminar</button>`;
-        lucide.createIcons({ nodes: [bar] });
-    } else {
-        bar.style.display = 'none';
-    }
-}
-function enterSelectMode() {
-    selectMode = true;
-    var banner = document.getElementById('selBanner');
-    if (banner) banner.style.display = 'flex';
-    document.querySelector('.admin-photos-grid')?.classList.add('select-mode');
-    updateSelBar();
-}
-function exitSelectMode() {
-    selectMode = false;
-    selectedMap.clear();
-    var banner = document.getElementById('selBanner');
-    if (banner) banner.style.display = 'none';
-    document.querySelector('.admin-photos-grid')?.classList.remove('select-mode');
-    updateCheckboxes();
-    updateSelBar();
-}
-async function bulkMovePhotos() {
-    var ids = Array.from(selectedMap.keys());
-    var gal = detalleCache[activeGalId];
-    var opts = gal.secciones.map(s => `<div class="move-target" onclick="executeBulkMove('${escJS(s.id)}')"><i data-lucide="folder"></i><span>${esc(s.nombre)}</span><small>${s.fotos.length}</small></div>`).join('');
-    openModal(`<div class="modal-header"><h3>Mover ${ids.length} foto${ids.length !== 1 ? 's' : ''}</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">${opts}</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>`);
-}
-async function executeBulkMove(destId) {
-    var ids = Array.from(selectedMap.keys());
-    showToast('Moviendo...', 'loader');
-    for (var id of ids) {
-        try { await drive('mover_foto', { fotoId: id, destinoId: destId }); } catch(e) {}
-    }
-    closeModal();
-    exitSelectMode();
-    delete detalleCache[activeGalId];
-    renderGalleryDetail(activeGalId);
-    showToast(`${ids.length} movidas`, 'check-circle');
-}
-async function bulkDeletePhotos() {
-    if (!confirm(`¿Eliminar ${selectedMap.size} foto(s)?`)) return;
-    var ids = Array.from(selectedMap.keys());
-    for (var id of ids) {
-        try { await drive('eliminar_foto', { id: id }); } catch(e) {}
-    }
-    exitSelectMode();
-    delete detalleCache[activeGalId];
-    renderGalleryDetail(activeGalId);
-    showToast(`${ids.length} eliminadas`, 'trash-2');
-}
-async function deletePhoto(galId, fotoId) {
-    if (!confirm('¿Eliminar esta foto?')) return;
-    try {
-        await drive('eliminar_foto', { id: fotoId });
-        delete detalleCache[galId];
-        renderGalleryDetail(galId);
-        showToast('Foto eliminada', 'trash-2');
-    } catch(e) { showToast('Error', 'alert-circle'); }
-}
-function showMovePhoto(galId, fotoId) {
-    var gal = detalleCache[galId];
-    var opts = gal.secciones.filter(s => s.id !== fotoId).map(s => `<div class="move-target" onclick="movePhoto('${escJS(galId)}','${escJS(fotoId)}','${escJS(s.id)}')"><i data-lucide="folder"></i><span>${esc(s.nombre)}</span><small>${s.fotos.length}</small></div>`).join('');
-    openModal(`<div class="modal-header"><h3>Mover foto</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">${opts}</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>`);
-}
-async function movePhoto(galId, fotoId, destId) {
-    try {
-        await drive('mover_foto', { fotoId: fotoId, destinoId: destId });
-        closeModal();
-        delete detalleCache[galId];
-        renderGalleryDetail(galId);
-        showToast('Foto movida', 'folder-input');
-    } catch(e) { showToast('Error', 'alert-circle'); }
-}
-function showAddSection(galId) {
-    openModal(`<div class="modal-header"><h3>Nueva sección</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="secName" placeholder="Ej: Ceremonia"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="addSection('${escJS(galId)}')">Crear</button></div>`);
-}
-async function addSection(galId) {
-    var name = document.getElementById('secName').value.trim();
-    if (!name) { showToast('Ingresa un nombre', 'alert-circle'); return; }
-    try {
-        await drive('crear_seccion', { id: galId, nombre: name });
-        closeModal();
-        delete detalleCache[galId];
-        renderGalleryDetail(galId);
-        showToast('Sección creada', 'check-circle');
-    } catch(e) { showToast('Error', 'alert-circle'); }
-}
+function findSectionIdByPhotoIndex(det, idx) { var count = 0; for (var s of det.secciones) { for (var f of s.fotos) { if (count === idx) return s.id; count++; } } return null; }
+function switchSection(gid, sid) { currentSectionId = sid; renderGalleryInner(gid, detalleCache[gid]); }
+function toggleSelectPhoto(fotoId, secId) { if (selectedMap.has(fotoId)) selectedMap.delete(fotoId); else selectedMap.set(fotoId, secId); updateCheckboxes(); updateSelBar(); }
+function updateCheckboxes() { document.querySelectorAll('.admin-photo-item').forEach(el => { var did = el.dataset.did; var chk = el.querySelector('.photo-check'); if (did && chk) { if (selectedMap.has(did)) { el.classList.add('selected'); chk.classList.add('checked'); } else { el.classList.remove('selected'); chk.classList.remove('checked'); } } }); }
+function updateSelBar() { var bar = document.getElementById('selBar'); if (!bar) return; var count = selectedMap.size; if (count > 0 && selectMode) { bar.style.display = 'flex'; bar.innerHTML = `<span>${count} seleccionada${count !== 1 ? 's' : ''}</span><button class="btn btn-ghost btn-sm" onclick="exitSelectMode()"><i data-lucide="x"></i> Cancelar</button><button class="btn btn-primary btn-sm" onclick="bulkMovePhotos()"><i data-lucide="folder-input"></i> Mover</button><button class="btn btn-danger btn-sm" onclick="bulkDeletePhotos()"><i data-lucide="trash-2"></i> Eliminar</button>`; lucide.createIcons({ nodes: [bar] }); } else { bar.style.display = 'none'; } }
+function enterSelectMode() { selectMode = true; var banner = document.getElementById('selBanner'); if (banner) banner.style.display = 'flex'; document.querySelector('.admin-photos-grid')?.classList.add('select-mode'); updateSelBar(); }
+function exitSelectMode() { selectMode = false; selectedMap.clear(); var banner = document.getElementById('selBanner'); if (banner) banner.style.display = 'none'; document.querySelector('.admin-photos-grid')?.classList.remove('select-mode'); updateCheckboxes(); updateSelBar(); }
+async function bulkMovePhotos() { var ids = Array.from(selectedMap.keys()); var gal = detalleCache[activeGalId]; var opts = gal.secciones.map(s => `<div class="move-target" onclick="executeBulkMove('${escJS(s.id)}')"><i data-lucide="folder"></i><span>${esc(s.nombre)}</span><small>${s.fotos.length}</small></div>`).join(''); openModal(`<div class="modal-header"><h3>Mover ${ids.length} foto${ids.length !== 1 ? 's' : ''}</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">${opts}</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>`); }
+async function executeBulkMove(destId) { var ids = Array.from(selectedMap.keys()); showToast('Moviendo...', 'loader'); for (var id of ids) { try { await drive('mover_foto', { fotoId: id, destinoId: destId }); } catch(e) {} } closeModal(); exitSelectMode(); delete detalleCache[activeGalId]; renderGalleryDetail(activeGalId); showToast(`${ids.length} movidas`, 'check-circle'); }
+async function bulkDeletePhotos() { if (!confirm(`¿Eliminar ${selectedMap.size} foto(s)?`)) return; var ids = Array.from(selectedMap.keys()); for (var id of ids) { try { await drive('eliminar_foto', { id: id }); } catch(e) {} } exitSelectMode(); delete detalleCache[activeGalId]; renderGalleryDetail(activeGalId); showToast(`${ids.length} eliminadas`, 'trash-2'); }
+async function deletePhoto(galId, fotoId) { if (!confirm('¿Eliminar esta foto?')) return; try { await drive('eliminar_foto', { id: fotoId }); delete detalleCache[galId]; renderGalleryDetail(galId); showToast('Foto eliminada', 'trash-2'); } catch(e) { showToast('Error', 'alert-circle'); } }
+function showMovePhoto(galId, fotoId) { var gal = detalleCache[galId]; var opts = gal.secciones.filter(s => s.id !== fotoId).map(s => `<div class="move-target" onclick="movePhoto('${escJS(galId)}','${escJS(fotoId)}','${escJS(s.id)}')"><i data-lucide="folder"></i><span>${esc(s.nombre)}</span><small>${s.fotos.length}</small></div>`).join(''); openModal(`<div class="modal-header"><h3>Mover foto</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body">${opts}</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>`); }
+async function movePhoto(galId, fotoId, destId) { try { await drive('mover_foto', { fotoId: fotoId, destinoId: destId }); closeModal(); delete detalleCache[galId]; renderGalleryDetail(galId); showToast('Foto movida', 'folder-input'); } catch(e) { showToast('Error', 'alert-circle'); } }
+function showAddSection(galId) { openModal(`<div class="modal-header"><h3>Nueva sección</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Nombre</label><input type="text" class="input" id="secName" placeholder="Ej: Ceremonia"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="addSection('${escJS(galId)}')">Crear</button></div>`); }
+async function addSection(galId) { var name = document.getElementById('secName').value.trim(); if (!name) { showToast('Ingresa un nombre', 'alert-circle'); return; } try { await drive('crear_seccion', { id: galId, nombre: name }); closeModal(); delete detalleCache[galId]; renderGalleryDetail(galId); showToast('Sección creada', 'check-circle'); } catch(e) { showToast('Error', 'alert-circle'); } }
 
 // ======================= EDITOR PORTADA =======================
-function showCoverEditor(galId) {
-    var d = detalleCache[galId];
-    if (!d) return;
-    if (!d.meta) d.meta = {};
-    var meta = d.meta;
-    var allPhotos = getAllPhotos(d);
-    openModal(`
-        <div class="modal-header"><h3>Portada de la galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>
-        <div class="modal-body">
-            <div class="form-group"><label class="input-label">Título principal</label><input type="text" class="input" id="coverTitle" value="${esc(meta.titulo || '')}" placeholder="${esc(d.nombre)}"></div>
-            <div class="form-group"><label class="input-label">Subtítulo</label><input type="text" class="input" id="coverSub" value="${esc(meta.subtitle || '')}"></div>
-            <div class="form-group"><label class="input-label">Frase (cursiva)</label><input type="text" class="input" id="coverTag" value="${esc(meta.tagline || '')}"></div>
-            <div class="form-group"><label class="input-label">Fecha (opcional)</label><input type="date" class="input" id="coverDate" value="${esc(meta.fecha || '')}"></div>
-            <div class="form-group"><label class="input-label">Foto de fondo</label><select class="input" id="coverPhoto"><option value="">Ninguna</option>${allPhotos.map(p => `<option value="${esc(p.id)}" ${meta.coverId === p.id ? 'selected' : ''}>${esc(p.nombre)}</option>`).join('')}</select></div>
-            <div class="form-group"><label><input type="checkbox" id="showCover" ${meta.showCover ? 'checked' : ''}> Mostrar portada al cliente</label></div>
-        </div>
-        <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveCover('${escJS(galId)}')">Guardar</button></div>
-    `);
-}
-async function saveCover(galId) {
-    var coverId = document.getElementById('coverPhoto').value;
-    var data = {
-        id: galId,
-        titulo: document.getElementById('coverTitle').value,
-        subtitle: document.getElementById('coverSub').value,
-        tagline: document.getElementById('coverTag').value,
-        fecha: document.getElementById('coverDate').value,
-        coverId: coverId,
-        showCover: document.getElementById('showCover').checked
-    };
-    try {
-        await drive('guardar_meta', data);
-        closeModal();
-        delete detalleCache[galId];
-        renderGalleryDetail(galId);
-        showToast('Portada guardada', 'check-circle');
-    } catch(e) { showToast('Error', 'alert-circle'); }
-}
+function showCoverEditor(galId) { var d = detalleCache[galId]; if (!d) return; if (!d.meta) d.meta = {}; var meta = d.meta; var allPhotos = getAllPhotos(d); openModal(`<div class="modal-header"><h3>Portada de la galería</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Título principal</label><input type="text" class="input" id="coverTitle" value="${esc(meta.titulo || '')}" placeholder="${esc(d.nombre)}"></div><div class="form-group"><label class="input-label">Subtítulo</label><input type="text" class="input" id="coverSub" value="${esc(meta.subtitle || '')}"></div><div class="form-group"><label class="input-label">Frase (cursiva)</label><input type="text" class="input" id="coverTag" value="${esc(meta.tagline || '')}"></div><div class="form-group"><label class="input-label">Fecha (opcional)</label><input type="date" class="input" id="coverDate" value="${esc(meta.fecha || '')}"></div><div class="form-group"><label class="input-label">Foto de fondo</label><select class="input" id="coverPhoto"><option value="">Ninguna</option>${allPhotos.map(p => `<option value="${esc(p.id)}" ${meta.coverId === p.id ? 'selected' : ''}>${esc(p.nombre)}</option>`).join('')}</select></div><div class="form-group"><label><input type="checkbox" id="showCover" ${meta.showCover ? 'checked' : ''}> Mostrar portada al cliente</label></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveCover('${escJS(galId)}')">Guardar</button></div>`); }
+async function saveCover(galId) { var coverId = document.getElementById('coverPhoto').value; var data = { id: galId, titulo: document.getElementById('coverTitle').value, subtitle: document.getElementById('coverSub').value, tagline: document.getElementById('coverTag').value, fecha: document.getElementById('coverDate').value, coverId: coverId, showCover: document.getElementById('showCover').checked }; try { await drive('guardar_meta', data); closeModal(); delete detalleCache[galId]; renderGalleryDetail(galId); showToast('Portada guardada', 'check-circle'); } catch(e) { showToast('Error', 'alert-circle'); } }
 
 // ======================= CONFIGURACIÓN =======================
-function showSettings() {
-    openModal(`
-        <div class="modal-header"><h3>Configuración</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>
-        <div class="modal-body">
-            <div class="form-group"><label class="input-label">Tu nombre</label><input type="text" class="input" id="cfgName" value="${esc(config.nombre)}"></div>
-            <div class="form-group"><label class="input-label">Contacto (WhatsApp, email)</label><input type="text" class="input" id="cfgContact" value="${esc(config.contacto || '')}"></div>
-            <div class="form-group"><label class="input-label">URL Apps Script</label><input type="text" class="input" id="cfgScript" value="${esc(DRIVE_URL)}"></div>
-        </div>
-        <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveSettings()">Guardar</button></div>
-    `);
-}
-async function saveSettings() {
-    var name = document.getElementById('cfgName').value.trim();
-    var contact = document.getElementById('cfgContact').value.trim();
-    var scriptUrl = document.getElementById('cfgScript').value.trim();
-    if (!name) { showToast('Nombre requerido', 'alert-circle'); return; }
-    try {
-        await drive('config', { nombre: name, contacto: contact });
-        config.nombre = name;
-        config.contacto = contact;
-        localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: config }));
-        if (scriptUrl && scriptUrl !== DRIVE_URL) DRIVE_URL = scriptUrl;
-        closeModal();
-        showToast('Configuración guardada', 'check-circle');
-        renderDashboard();
-    } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); }
-}
+function showSettings() { openModal(`<div class="modal-header"><h3>Configuración</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label class="input-label">Tu nombre</label><input type="text" class="input" id="cfgName" value="${esc(config.nombre)}"></div><div class="form-group"><label class="input-label">Contacto (WhatsApp, email)</label><input type="text" class="input" id="cfgContact" value="${esc(config.contacto || '')}"></div><div class="form-group"><label class="input-label">URL Apps Script</label><input type="text" class="input" id="cfgScript" value="${esc(DRIVE_URL)}"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveSettings()">Guardar</button></div>`); }
+async function saveSettings() { var name = document.getElementById('cfgName').value.trim(); var contact = document.getElementById('cfgContact').value.trim(); var scriptUrl = document.getElementById('cfgScript').value.trim(); if (!name) { showToast('Nombre requerido', 'alert-circle'); return; } try { await drive('config', { nombre: name, contacto: contact }); config.nombre = name; config.contacto = contact; localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: config })); if (scriptUrl && scriptUrl !== DRIVE_URL) DRIVE_URL = scriptUrl; closeModal(); showToast('Configuración guardada', 'check-circle'); renderDashboard(); } catch(e) { showToast('Error: ' + e.message, 'alert-circle'); } }
 
 // ======================= VISTA CLIENTE =======================
 async function renderClientGallery(id) {
-    downloadUnlocked = false;
+    downloadUnlocked = false; isShareView = true;
     document.getElementById('app').innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Cargando galería...</p></div>`;
-    try {
-        var cfg = await drive('config');
-        config = cfg;
-        localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: cfg }));
-    } catch(e) {}
-    try {
-        var d = await drive('detalle', { id: id });
-        detalleCache[id] = d;
-        if (d.expirada) {
-            document.getElementById('app').innerHTML = `<div class="expired-banner" style="text-align:center;padding:80px"><i data-lucide="lock"></i><h3>Galería expirada</h3><p>Esta galería ya no está disponible.</p>${config.contacto ? `<button class="btn btn-primary" onclick="window.open('${escJS(config.contacto)}')">Contactar</button>` : ''}</div>`;
-            return;
-        }
-        var meta = d.meta || {};
-        if (meta.showCover && d.coverUrl) {
-            renderClientCover(d, id);
-        } else {
-            currentSectionId = 'all';
-            renderClientInner(id, d);
-        }
-    } catch(e) {
-        document.getElementById('app').innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="alert-triangle"></i></div><h2>Galería no encontrada</h2><p>El enlace no es válido o la galería fue eliminada.</p></div>`;
-    }
+    try { var cfg = await drive('config'); config = cfg; localStorage.setItem('mgp_config', JSON.stringify({ ts: Date.now(), data: cfg })); } catch(e) {}
+    try { var d = await drive('detalle', { id: id }); detalleCache[id] = d; if (d.expirada) { document.getElementById('app').innerHTML = `<div class="expired-banner" style="text-align:center;padding:80px"><i data-lucide="lock"></i><h3>Galería expirada</h3><p>Esta galería ya no está disponible.</p>${config.contacto ? `<button class="btn btn-primary" onclick="window.open('${escJS(config.contacto)}')">Contactar</button>` : ''}</div>`; return; } var meta = d.meta || {}; if (meta.showCover && d.coverUrl) { renderClientCover(d, id); } else { currentSectionId = 'all'; renderClientInner(id, d); } } catch(e) { document.getElementById('app').innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="alert-triangle"></i></div><h2>Galería no encontrada</h2><p>El enlace no es válido o la galería fue eliminada.</p></div>`; }
 }
-function renderClientCover(d, id) {
-    var meta = d.meta || {};
-    var font = meta.font || 'playfair';
-    var title = meta.titulo || d.nombre;
-    document.getElementById('app').innerHTML = `
-        <div class="cover-page" style="min-height:100vh;background:linear-gradient(135deg,#2c3e50,#1a1a2e);display:flex;align-items:center;justify-content:center;text-align:center;position:relative">
-            <div class="cover-bg" style="position:absolute;inset:0;background-image:url('${esc(d.coverUrl)}');background-size:cover;background-position:center"></div>
-            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-            <div style="position:relative;z-index:2;color:#fff;padding:20px">
-                <div style="font-size:clamp(36px,8vw,72px);font-family: var(--serif)">${esc(title)}</div>
-                ${meta.fecha ? `<div style="margin-top:8px;opacity:0.8">${esc(formatDateFull(meta.fecha))}</div>` : ''}
-                ${meta.subtitle ? `<div style="margin-top:4px">${esc(meta.subtitle)}</div>` : ''}
-                ${meta.tagline ? `<div style="margin-top:8px;font-style:italic">${esc(meta.tagline)}</div>` : ''}
-                <button class="btn btn-primary" style="margin-top:32px" onclick="currentSectionId='all';renderClientInner('${escJS(id)}',detalleCache['${escJS(id)}'])">Ver galería</button>
-            </div>
-            <div style="position:absolute;bottom:20px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.6);font-size:12px">Fotografía por ${esc(config.nombre)}</div>
-        </div>
-    `;
-}
-function renderClientInner(id, d) {
-    var allPhotos = getAllPhotos(d);
-    var photos = getSectionPhotos(d, currentSectionId);
-    var tabs = `<div class="section-tabs" style="justify-content:center;margin-bottom:16px">`;
-    tabs += `<button class="section-tab ${currentSectionId === 'all' ? 'active' : ''}" onclick="clientSwitchSection('${escJS(id)}','all')">Todas (${allPhotos.length})</button>`;
-    tabs += (d.secciones || []).map(s => `<button class="section-tab ${currentSectionId === s.id ? 'active' : ''}" onclick="clientSwitchSection('${escJS(id)}','${escJS(s.id)}')">${esc(s.nombre)} (${s.fotos.length})</button>`).join('');
-    tabs += `</div>`;
-
-    var masonry = `<div class="masonry">` + photos.map((p, idx) => `<div class="masonry-item" style="animation-delay:${Math.min(idx*0.03,0.3)}s" onclick="openLightbox(getSectionPhotos(detalleCache['${escJS(id)}'], '${escJS(currentSectionId)}'), ${idx})"><img src="${esc(p.url)}" loading="lazy"></div>`).join('') + `</div>`;
-
-    document.getElementById('app').innerHTML = `
-        <header class="client-header">
-            <div class="client-logo"><div class="client-logo-mark">${esc(config.nombre.charAt(0).toUpperCase())}</div><div class="client-logo-text">${esc(config.nombre)}</div></div>
-            <button class="client-download-btn" onclick="requestDownload('${escJS(id)}')"><i data-lucide="download"></i> Descargar</button>
-        </header>
-        <div class="client-info"><h1>${esc(d.nombre)}</h1><div class="meta"><span><i data-lucide="image"></i> ${allPhotos.length} fotos</span></div></div>
-        ${tabs}
-        ${masonry}
-        <footer style="text-align:center;padding:24px;color:var(--text3);font-size:12px">${esc(config.nombre)}</footer>
-    `;
-    lucide.createIcons();
-}
-function clientSwitchSection(id, sid) {
-    currentSectionId = sid;
-    renderClientInner(id, detalleCache[id]);
-}
-function requestDownload(galId) {
-    if (downloadUnlocked) {
-        downloadZip(galId);
-        return;
-    }
-    var meta = detalleCache[galId].meta || {};
-    if (!meta.downloadCode) {
-        showToast('Descarga no disponible', 'alert-circle');
-        return;
-    }
-    openModal(`
-        <div class="modal-header"><h3>Código de descarga</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div>
-        <div class="modal-body">
-            <p>Ingresa el código que te proporcionó el fotógrafo para descargar las fotos.</p>
-            <div class="form-group" style="margin-top:16px"><input type="text" class="input" id="downloadCode" placeholder="Código" style="text-align:center;letter-spacing:2px;font-family:monospace;font-size:18px" maxlength="6"></div>
-            <p id="codeErrorMsg" style="color:#dc2626;font-size:13px;display:none">Código incorrecto.</p>
-        </div>
-        <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="verifyAndDownload('${escJS(galId)}')">Verificar y descargar</button></div>
-    `);
-}
-async function verifyAndDownload(galId) {
-    var code = document.getElementById('downloadCode').value.trim().toUpperCase();
-    if (!code) return;
-    try {
-        var r = await drive('verificar_codigo', { id: galId, codigo: code });
-        if (r.valido) {
-            downloadUnlocked = true;
-            closeModal();
-            downloadZip(galId);
-        } else {
-            document.getElementById('codeErrorMsg').style.display = 'block';
-        }
-    } catch(e) {
-        showToast('Error de verificación', 'alert-circle');
-    }
-}
-async function downloadZip(galId) {
-    var d = detalleCache[galId];
-    var photos = getSectionPhotos(d, currentSectionId);
-    if (!photos.length) { showToast('No hay fotos para descargar', 'alert-circle'); return; }
-    if (typeof JSZip === 'undefined') { showToast('JSZip no disponible', 'alert-circle'); return; }
-    openModal(`<div class="modal-body" style="text-align:center;padding:32px"><div class="spinner"></div><p>Preparando ZIP...</p><div class="dl-progress" style="margin-top:12px"><div class="dl-progress-bar"><div class="dl-progress-fill" id="dlFill"></div></div><p id="dlText">0/${photos.length} fotos</p></div></div>`);
-    var zip = new JSZip();
-    var folder = zip.folder(d.nombre || 'galeria');
-    for (var i = 0; i < photos.length; i++) {
-        try {
-            var resp = await fetch(photos[i].url);
-            var blob = await resp.blob();
-            folder.file(photos[i].nombre || `foto_${i+1}.jpg`, blob);
-        } catch(e) {}
-        var percent = ((i+1)/photos.length)*100;
-        var fill = document.getElementById('dlFill');
-        if (fill) fill.style.width = percent + '%';
-        var txt = document.getElementById('dlText');
-        if (txt) txt.innerText = `${i+1}/${photos.length} fotos`;
-    }
-    var zipBlob = await zip.generateAsync({ type: 'blob' });
-    var url = URL.createObjectURL(zipBlob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = `${d.nombre || 'galeria'}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    closeModal();
-    showToast('Descarga completada', 'download');
-}
+function renderClientCover(d, id) { var meta = d.meta || {}; var font = meta.font || 'playfair'; var title = meta.titulo || d.nombre; document.getElementById('app').innerHTML = `<div class="cover-page" style="min-height:100vh;background:linear-gradient(135deg,#2c3e50,#1a1a2e);display:flex;align-items:center;justify-content:center;text-align:center;position:relative"><div class="cover-bg" style="position:absolute;inset:0;background-image:url('${esc(d.coverUrl)}');background-size:cover;background-position:center"></div><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><div style="position:relative;z-index:2;color:#fff;padding:20px"><div style="font-size:clamp(36px,8vw,72px);font-family: var(--serif)">${esc(title)}</div>${meta.fecha ? `<div style="margin-top:8px;opacity:0.8">${esc(formatDateFull(meta.fecha))}</div>` : ''}${meta.subtitle ? `<div style="margin-top:4px">${esc(meta.subtitle)}</div>` : ''}${meta.tagline ? `<div style="margin-top:8px;font-style:italic">${esc(meta.tagline)}</div>` : ''}<button class="btn btn-primary" style="margin-top:32px" onclick="currentSectionId='all';renderClientInner('${escJS(id)}',detalleCache['${escJS(id)}'])">Ver galería</button></div><div style="position:absolute;bottom:20px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.6);font-size:12px">Fotografía por ${esc(config.nombre)}</div></div>`; }
+function renderClientInner(id, d) { var allPhotos = getAllPhotos(d); var photos = getSectionPhotos(d, currentSectionId); var tabs = `<div class="section-tabs" style="justify-content:center;margin-bottom:16px">`; tabs += `<button class="section-tab ${currentSectionId === 'all' ? 'active' : ''}" onclick="clientSwitchSection('${escJS(id)}','all')">Todas (${allPhotos.length})</button>`; tabs += (d.secciones || []).map(s => `<button class="section-tab ${currentSectionId === s.id ? 'active' : ''}" onclick="clientSwitchSection('${escJS(id)}','${escJS(s.id)}')">${esc(s.nombre)} (${s.fotos.length})</button>`).join(''); tabs += `</div>`; var masonry = `<div class="masonry">` + photos.map((p, idx) => `<div class="masonry-item" style="animation-delay:${Math.min(idx*0.03,0.3)}s" onclick="openLightbox(getSectionPhotos(detalleCache['${escJS(id)}'], '${escJS(currentSectionId)}'), ${idx})"><img src="${esc(p.url)}" loading="lazy"></div>`).join('') + `</div>`; document.getElementById('app').innerHTML = `<header class="client-header"><div class="client-logo"><div class="client-logo-mark">${esc(config.nombre.charAt(0).toUpperCase())}</div><div class="client-logo-text">${esc(config.nombre)}</div></div><button class="client-download-btn" onclick="requestDownload('${escJS(id)}')"><i data-lucide="download"></i> Descargar</button></header><div class="client-info"><h1>${esc(d.nombre)}</h1><div class="meta"><span><i data-lucide="image"></i> ${allPhotos.length} fotos</span></div></div>${tabs}${masonry}<footer style="text-align:center;padding:24px;color:var(--text3);font-size:12px">${esc(config.nombre)}</footer>`; lucide.createIcons(); }
+function clientSwitchSection(id, sid) { currentSectionId = sid; renderClientInner(id, detalleCache[id]); }
+function requestDownload(galId) { if (downloadUnlocked) { downloadZip(galId); return; } var meta = detalleCache[galId].meta || {}; if (!meta.downloadCode) { showToast('Descarga no disponible', 'alert-circle'); return; } openModal(`<div class="modal-header"><h3>Código de descarga</h3><button class="btn btn-ghost btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button></div><div class="modal-body"><p>Ingresa el código que te proporcionó el fotógrafo para descargar las fotos.</p><div class="form-group" style="margin-top:16px"><input type="text" class="input" id="downloadCode" placeholder="Código" style="text-align:center;letter-spacing:2px;font-family:monospace;font-size:18px" maxlength="6"></div><p id="codeErrorMsg" style="color:#dc2626;font-size:13px;display:none">Código incorrecto.</p></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="verifyAndDownload('${escJS(galId)}')">Verificar y descargar</button></div>`); }
+async function verifyAndDownload(galId) { var code = document.getElementById('downloadCode').value.trim().toUpperCase(); if (!code) return; try { var r = await drive('verificar_codigo', { id: galId, codigo: code }); if (r.valido) { downloadUnlocked = true; closeModal(); downloadZip(galId); } else { document.getElementById('codeErrorMsg').style.display = 'block'; } } catch(e) { showToast('Error de verificación', 'alert-circle'); } }
+async function downloadZip(galId) { var d = detalleCache[galId]; var photos = getSectionPhotos(d, currentSectionId); if (!photos.length) { showToast('No hay fotos para descargar', 'alert-circle'); return; } if (typeof JSZip === 'undefined') { showToast('JSZip no disponible', 'alert-circle'); return; } openModal(`<div class="modal-body" style="text-align:center;padding:32px"><div class="spinner"></div><p>Preparando ZIP...</p><div class="dl-progress" style="margin-top:12px"><div class="dl-progress-bar"><div class="dl-progress-fill" id="dlFill"></div></div><p id="dlText">0/${photos.length} fotos</p></div></div>`); var zip = new JSZip(); var folder = zip.folder(d.nombre || 'galeria'); for (var i = 0; i < photos.length; i++) { try { var resp = await fetch(photos[i].url); var blob = await resp.blob(); folder.file(photos[i].nombre || `foto_${i+1}.jpg`, blob); } catch(e) {} var percent = ((i+1)/photos.length)*100; var fill = document.getElementById('dlFill'); if (fill) fill.style.width = percent + '%'; var txt = document.getElementById('dlText'); if (txt) txt.innerText = `${i+1}/${photos.length} fotos`; } var zipBlob = await zip.generateAsync({ type: 'blob' }); var url = URL.createObjectURL(zipBlob); var a = document.createElement('a'); a.href = url; a.download = `${d.nombre || 'galeria'}.zip`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); closeModal(); showToast('Descarga completada', 'download'); }
 
 // ======================= ROUTER =======================
-function getRoute() {
-    var hash = location.hash.slice(1);
-    if (hash === '/' || hash === '') return { page: 'admin' };
-    if (hash.indexOf('/gallery/') === 0) return { page: 'gallery', id: hash.slice(9) };
-    return { page: 'admin' };
-}
+function getRoute() { var hash = location.hash.slice(1); if (hash === '/' || hash === '') return { page: 'admin' }; if (hash.indexOf('/gallery/') === 0) return { page: 'gallery', id: hash.slice(9) }; return { page: 'admin' }; }
 function navigate(hash) { location.hash = hash; }
 window.addEventListener('hashchange', function() { if (!isShareView) render(); });
-async function render() {
-    var route = getRoute();
-    if (route.page === 'admin') await renderDashboard();
-    else if (route.page === 'gallery') await renderGalleryDetail(route.id);
-}
+async function render() { var route = getRoute(); if (route.page === 'admin') await renderDashboard(); else if (route.page === 'gallery') await renderGalleryDetail(route.id); }
 // ======================= INICIO =======================
-(function init() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var galId = urlParams.get('g');
-    if (galId) {
-        isShareView = true;
-        renderClientGallery(galId);
-    } else {
-        isShareView = false;
-        render();
-    }
-})();
+(function init() { var urlParams = new URLSearchParams(window.location.search); var galId = urlParams.get('g'); if (galId) { isShareView = true; renderClientGallery(galId); } else { isShareView = false; render(); } })();
 </script>
 </body>
 </html>
